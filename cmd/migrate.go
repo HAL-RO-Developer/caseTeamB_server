@@ -1,6 +1,6 @@
 package main
 
-import "github.com/chotchy-inc/PATRAProductAPI/model"
+import "github.com/HAL-RO-Developer/caseTeamB_server/model"
 
 func main() {
 	db := model.GetDBConn()

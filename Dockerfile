@@ -1,24 +1,6 @@
-FROM alpine:3.6
-WORKDIR /root
-ENV GO_ENV production
+FROM golang:latest
+RUN go get github.com/HAL-RO-Developer/caseTeamB_server
 
-RUN set -x \
-  && apk upgrade --no-cache \
-  && apk --update add tzdata \
-  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
-  && apk del tzdata \
-  && rm -rf /var/cache/apk/*
+EXPOSE 8080
 
-
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-
-ADD ./cmd/main .
-ADD ./public ./public
-ADD ./view ./view
-ADD ./config.yml ./config.yml
-
-
-EXPOSE 8000
-
-# Run it
-ENTRYPOINT ["./main"]
+ENTRYPOINT ["caseTeamB_server"]

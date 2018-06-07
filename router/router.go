@@ -2,19 +2,12 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/chotchy-inc/PATRAProductAPI/middleware"
+	"github.com/HAL-RO-Developer/caseTeamB_server/middleware"
 )
 
 func GetRouter() *gin.Engine {
 	r := gin.Default()
-	r.Static("/js", "./public/js")
-	r.Static("/image", "./public/image")
-	r.Static("/css", "./public/css")
 
-	r.LoadHTMLGlob("view/*")
-	r.NoRoute(func(c *gin.Context) {
-		c.HTML(200, "index.html", nil)
-	})
 	api := r.Group("/api")
 	apiRouter(api)
 	auth := api.Group("")

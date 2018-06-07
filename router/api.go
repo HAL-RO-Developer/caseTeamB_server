@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	. "github.com/chotchy-inc/PATRAProductAPI/controller"
-	"github.com/chotchy-inc/PATRAProductAPI/middleware"
+	. "github.com/HAL-RO-Developer/caseTeamB_server/controller"
+	"github.com/HAL-RO-Developer/caseTeamB_server/middleware"
 )
 
 func apiRouter(api *gin.RouterGroup) {

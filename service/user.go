@@ -1,6 +1,6 @@
 package service
 
-import "github.com/chotchy-inc/PATRAProductAPI/model"
+import "github.com/HAL-RO-Developer/caseTeamB_server/model"
 
 var User = user{}
 
@@ -16,15 +16,16 @@ func (u *user) ExisByEmail(email string) bool {
 	db.Where("email = ?", email).Find(&users)
 	return len(users) != 0
 }
+
 func (u *user) ExisByName(name string) bool {
 	var users []model.User
 	db.Where("name = ?", name).Find(&users)
 	return len(users) != 0
 }
 
-func (u *user) Login(email, pass string) (*model.User, bool) {
+func (u *user) Login(name, pass string) (*model.User, bool) {
 	var users []model.User
-	db.Where("email = ?", email).Find(&users)
+	db.Where("name = ?", name).Find(&users)
 	if len(users) == 0 {
 		return nil, false
 	}

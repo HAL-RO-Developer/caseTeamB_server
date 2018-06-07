@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/makki0205/gojwt"
-	"github.com/chotchy-inc/PATRAProductAPI/controller"
-	"github.com/chotchy-inc/PATRAProductAPI/model"
-	"github.com/chotchy-inc/PATRAProductAPI/service"
+	"github.com/HAL-RO-Developer/caseTeamB_server/controller"
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
+	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 )
 
 func Jwt(salt string, exp int) gin.HandlerFunc {
@@ -37,13 +37,13 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	user, ok := service.User.Login(req.Email, req.Password)
+	user, ok := service.User.Login(req.Name, req.Password)
 	if !ok {
 		controller.BatRequest("ログイン失敗", c)
 	}
 	claims := map[string]string{
 		"id":    strconv.Itoa(int(user.ID)),
-		"email": user.Email,
+		"name": user.Name,
 	}
 	token := jwt.Generate(claims)
 	controller.Json(gin.H{"token": token}, c)
