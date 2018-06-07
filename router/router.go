@@ -31,5 +31,4 @@ func cros(c *gin.Context) {
 	}
 	c.Set("start_time", time.Now())
 	c.Next()
-
 }
