@@ -1,6 +1,7 @@
 FROM golang:latest
 RUN go get github.com/HAL-RO-Developer/caseTeamB_server
 
-EXPOSE 8080
+ADD config.yml.template ./config.yml
+EXPOSE 8000
 
 ENTRYPOINT ["caseTeamB_server"]
