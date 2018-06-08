@@ -1,13 +1,15 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	. "github.com/HAL-RO-Developer/caseTeamB_server/controller"
 	"github.com/HAL-RO-Developer/caseTeamB_server/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 func apiRouter(api *gin.RouterGroup) {
+	//api.OPTIONS("/signup", preflightRequest)
 	api.POST("/signup", User.Create)
+	//api.OPTIONS("/signin", preflightRequest)
 	api.POST("/signin", middleware.Login)
 
 }

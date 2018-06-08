@@ -1,7 +1,7 @@
 package router
 
 import (
-	"time"
+	"fmt"
 
 	"github.com/HAL-RO-Developer/caseTeamB_server/middleware"
 	"github.com/gin-gonic/gin"
@@ -9,8 +9,8 @@ import (
 
 func GetRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(preflightRequest)
 
-	r.Use(cros)
 	api := r.Group("/api")
 	apiRouter(api)
 	auth := api.Group("")
@@ -20,7 +20,12 @@ func GetRouter() *gin.Engine {
 
 }
 
-func cros(c *gin.Context) {
+//func cros(c *gin.Context) {
+//	c.Header("Access-Control-Allow-Origin", "*")
+//	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+//}
+
+/*func cros(c *gin.Context) {
 	headers := c.Request.Header.Get("Access-Control-Request-Headers")
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,HEAD,PATCH,DELETE,OPTIONS")
@@ -29,6 +34,20 @@ func cros(c *gin.Context) {
 		c.Status(200)
 		c.Abort()
 	}
+
 	c.Set("start_time", time.Now())
 	c.Next()
+}*/
+
+func preflightRequest(c *gin.Context) {
+	headers := c.Request.Header.Get("Access-Control-Request-Headers")
+
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", headers)
+	if c.Request.Method == "OPTIONS" {
+		fmt.Println("in!!!!")
+		c.Status(200)
+		c.Abort()
+	}
 }
