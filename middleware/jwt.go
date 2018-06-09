@@ -10,25 +10,6 @@ import (
 	"github.com/makki0205/gojwt"
 )
 
-func Jwt(salt string, exp int) gin.HandlerFunc {
-	jwt.SetSalt(salt)
-	jwt.SetExp(exp)
-	return func(c *gin.Context) {
-		token := c.Query("token")
-		claims, err := jwt.Decode(token)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"err": err.Error(),
-			})
-			c.Abort()
-			return
-		}
-		c.Set("user_id", claims["id"])
-		c.Set("email", claims["email"])
-		c.Next()
-	}
-}
-
 func Login(c *gin.Context) {
 	var req model.User
 	err := c.BindJSON(&req)

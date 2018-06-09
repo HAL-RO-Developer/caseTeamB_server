@@ -17,6 +17,10 @@ func apiRouter(api *gin.RouterGroup) {
 	api.GET("/button", Button.ListButton)
 	api.DELETE("/button", Button.DeleteButton)
 
+	// ボタン登録、プッシュ回数追加
+	api.POST("device", Device.DeviceRegistration)
+	api.PUT("device", Device.DeviceIncrement)
+
 }
 
 func authApiRouter(auth *gin.RouterGroup) {

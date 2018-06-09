@@ -16,7 +16,7 @@ func (u *userimpl) Create(c *gin.Context) {
 	var user model.User
 	err := c.BindJSON(&user)
 	if err != nil {
-		BadRequest("ユーザー名またはパスワードが入力されていません。", c)
+		BadRequest("ユーザー名またはパスワードが未入力です。", c)
 		return
 	}
 

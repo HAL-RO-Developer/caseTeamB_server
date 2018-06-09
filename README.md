@@ -57,7 +57,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: ユーザー名が不正です。
+        + error: ログインエラー
 
 ## ユーザー削除 [/api/user]
 ### ユーザー削除[DELETE]
@@ -78,7 +78,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
      
 ## ボタン [/api/button]
 
@@ -101,7 +101,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: 発行済のボタンIDです。
+        + error: ログインエラー
      
 
 ### ボタン一覧取得[GET]
@@ -124,7 +124,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
      
      
@@ -149,7 +149,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
      
 
@@ -166,7 +166,7 @@ FORMAT: 1A
         Accept: application/json
  
     + Attribute
-        + button_id: sample
+        + pin: 0000
         + mac: abc123
 
 
@@ -174,13 +174,13 @@ FORMAT: 1A
 
  + Attribute
 
-      + success: ボタンIDを登録しました。
+      + button_id: sample
 
 + Response 400 (application/json)
 
     + Attribute
 
-        + error: このボタンIDは登録済みです。
+        + error: pinが見つかりません。
 
 ### ボタンプッシュ[PUT]
 目標ボタンが押された回数を記録します。
@@ -234,7 +234,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
 
 ### 目標取得[GET]
@@ -262,7 +262,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
      
 ### 目標削除[DELETE]
@@ -289,7 +289,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
 
 ## メッセージ [/api/message]
@@ -317,7 +317,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
 
 ### メッセージ取得[GET]
@@ -345,7 +345,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー
 
      
 ### メッセージ削除[DELETE]
@@ -372,4 +372,4 @@ FORMAT: 1A
 
     + Attribute
 
-        + error: アクセストークンが不正です。
+        + error: ログインエラー

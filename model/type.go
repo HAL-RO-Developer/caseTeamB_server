@@ -20,21 +20,21 @@ type User struct {
 type Button struct {
 	Model
 	Name     string `json:"name"`
-	ButtonId string `json:"buttonId"`
-	PushOn   string `json:"pushOn"`
+	ButtonId string `json:"button_id"`
+	PushOn   string `json:"push_on"`
 	Pin      string `json:"pin"`
+	Mac      string `json:"mac"`
 }
 
 type Goal struct {
 	Model
-	Name     string `json:"name"`
+	ButtonId string `json:"button_id"`
 	Contents string `json:"contents"`
 }
 
 type Message struct {
 	Model
-	Name     string `json:"name"`
-	ButtonId string `json:"buttonId"`
+	ButtonId string `json:"button_id"`
 	Rule     string `json:"rule"`
 	Message  string `json:"message"`
 }

@@ -8,8 +8,6 @@ import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
 
-var db = model.GetDBConn()
-
 // ボタンID新規登録
 func CreateButton(name string) (string, error) {
 	deviceID := createId()
