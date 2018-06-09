@@ -29,7 +29,7 @@ type Button struct {
 type Goal struct {
 	Model
 	ButtonId string `json:"button_id"`
-	Contents string `json:"contents"`
+	Contents string `json:"goal"`
 }
 
 type Message struct {

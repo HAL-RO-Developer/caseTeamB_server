@@ -22,6 +22,7 @@ func RegistrationButton(pin string, mac string) (string, error) {
 }
 
 // プッシュ回数追加
+// Todo BOCCOAPI追記
 func IncrementButton(button_id string) error {
 	button := model.Button{}
 	err := db.Where("button_id = ?", button_id).First(&button).Error

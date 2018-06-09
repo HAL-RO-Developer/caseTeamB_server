@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/HAL-RO-Developer/caseTeamB_server/controller"
+	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
@@ -19,7 +19,7 @@ func Login(c *gin.Context) {
 	}
 	user, ok := service.User.Login(req.Name, req.Password)
 	if !ok {
-		controller.BadRequest("ログインエラー", c)
+		response.BadRequest("ログインエラー", c)
 		return
 	}
 	claims := map[string]string{
@@ -28,5 +28,5 @@ func Login(c *gin.Context) {
 	}
 	token := jwt.Generate(claims)
 
-	controller.Json(gin.H{"token": token}, c)
+	response.Json(gin.H{"token": token}, c)
 }
