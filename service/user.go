@@ -31,3 +31,10 @@ func (u *user) Login(name, pass string) (*model.User, bool) {
 	}
 	return &users[0], users[0].Password == pass
 }
+
+// ユーザー情報削除
+func DeleteUser(name string) {
+	var user model.User
+	db.Where("name = ?", name).First(&user)
+	db.Delete(&user)
+}

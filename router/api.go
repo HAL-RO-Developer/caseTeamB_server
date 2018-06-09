@@ -7,10 +7,15 @@ import (
 )
 
 func apiRouter(api *gin.RouterGroup) {
-	//api.OPTIONS("/signup", preflightRequest)
+	// ユーザー登録、サインアップ
 	api.POST("/signup", User.Create)
-	//api.OPTIONS("/signin", preflightRequest)
 	api.POST("/signin", middleware.Login)
+	api.DELETE("/user", User.UserDelete)
+
+	// ボタンID発行、取得、削除
+	api.POST("/button", Button.CreateNewButton)
+	api.GET("/button", Button.ListButton)
+	api.DELETE("/button", Button.DeleteButton)
 
 }
 

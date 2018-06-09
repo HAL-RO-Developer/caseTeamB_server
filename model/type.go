@@ -16,12 +16,25 @@ type User struct {
 	Name     string `json:"name" binding:"required"`
 	Password string `json:"pass" binding:"required"`
 }
-type Token struct {
+
+type Button struct {
 	Model
-	UserID uint
-	Body   string
+	Name     string `json:"name"`
+	ButtonId string `json:"buttonId"`
+	PushOn   string `json:"pushOn"`
+	Pin      string `json:"pin"`
 }
 
-type Recipi struct {
+type Goal struct {
 	Model
+	Name     string `json:"name"`
+	Contents string `json:"contents"`
+}
+
+type Message struct {
+	Model
+	Name     string `json:"name"`
+	ButtonId string `json:"buttonId"`
+	Rule     string `json:"rule"`
+	Message  string `json:"message"`
 }

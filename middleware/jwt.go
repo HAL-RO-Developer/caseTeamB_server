@@ -2,13 +2,12 @@ package middleware
 
 import (
 	"net/http"
-	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/makki0205/gojwt"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller"
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
+	"github.com/gin-gonic/gin"
+	"github.com/makki0205/gojwt"
 )
 
 func Jwt(salt string, exp int) gin.HandlerFunc {
@@ -39,12 +38,14 @@ func Login(c *gin.Context) {
 	}
 	user, ok := service.User.Login(req.Name, req.Password)
 	if !ok {
-		controller.BatRequest("ログイン失敗", c)
+		controller.BadRequest("ログインエラー", c)
+		return
 	}
 	claims := map[string]string{
-		"id":    strconv.Itoa(int(user.ID)),
 		"name": user.Name,
+		"pass": user.Password,
 	}
 	token := jwt.Generate(claims)
+
 	controller.Json(gin.H{"token": token}, c)
 }

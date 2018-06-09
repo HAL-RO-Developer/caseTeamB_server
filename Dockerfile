@@ -1,7 +1,16 @@
 FROM golang:latest
-RUN go get github.com/HAL-RO-Developer/caseTeamB_server
 
-ADD config.yml.template ./config.yml
+WORKDIR /go/src/github.com/HAL-RO-Developer/caseTeamB_server
+
+
+ADD ./ ./
+
+RUN cp config.yml.template config.yml
+
+RUN ls -la
+
+
 EXPOSE 8000
 
-ENTRYPOINT ["caseTeamB_server"]
+ENTRYPOINT ["go","run","main.go"]
+

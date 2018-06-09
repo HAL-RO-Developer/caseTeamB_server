@@ -6,7 +6,7 @@ FORMAT: 1A
 ユーザー情報の登録、およびサインインするためのAPI
 
 
-### ユーザー登録 [POST]
+### サインアップ [POST]
 ユーザー情報の登録を行います。
 
 + Request (applicaition/json)
@@ -51,20 +51,41 @@ FORMAT: 1A
 
     + Attribute
 
-        + token: 'sample'
+        + token: sample
 
 + Response 400 (application/json)
 
     + Attribute
 
         + error: ユーザー名が不正です。
+
+## ユーザー削除 [/api/user]
+### ユーザー削除[DELETE]
+登録されているユーザー情報を削除します。
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: ユーザー情報を削除しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: アクセストークンが不正です。
      
 ## ボタン [/api/button]
 
 ### ボタンID発行[POST]
 新規登録するボタンIDの発行を行います。
 
-+ Request (application/json)
++ Request
     + Headers
 
             Authorization: token
@@ -74,7 +95,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + button_id: 'sample'
+        + pin: 0000
 
 + Response 400 (application/json)
 
@@ -86,7 +107,7 @@ FORMAT: 1A
 ### ボタン一覧取得[GET]
 現在登録されているボタンIDの一覧を取得します。
 
-+ Request (application/json)
++ Request
     + Headers
 
             Authorization: token
@@ -96,8 +117,8 @@ FORMAT: 1A
     + Attribute
 
         + button_id (array)
-            + 'sample'
-            + 'test'
+            + sample,
+            + test
 
 + Response 400 (application/json)
 
@@ -116,13 +137,13 @@ FORMAT: 1A
             Authorization: token
     + Attribute
 
-        + button_id: 'sample'
+        + button_id: sample
 
 + Response 200 (application/json)
 
-+ Attribute
+    + Attribute
 
-      + success: ボタンIDを削除しました。
+        + success: ボタンIDを削除しました。
 
 + Response 400 (application/json)
 
@@ -132,7 +153,7 @@ FORMAT: 1A
 
      
 
-## デバイス [/api/device/iam]
+## デバイス [/api/device]
 
 ### ボタン登録[POST]
 ボタンIDと各ボタンデバイスとの紐付けを行います。
@@ -161,12 +182,7 @@ FORMAT: 1A
 
         + error: このボタンIDは登録済みです。
 
-
-
-
-## ボタンプッシュ [/api/device/push]
-
-### ボタンプッシュ[POST]
+### ボタンプッシュ[PUT]
 目標ボタンが押された回数を記録します。
 
 + Request (applicaition/json)
@@ -194,7 +210,7 @@ FORMAT: 1A
 
      
 
-## 目標 [/api/goal/{button_id}]
+## 目標 [/api/goal]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
@@ -261,6 +277,89 @@ FORMAT: 1A
  
     + Attributes
         + button_id: sample
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 目標を削除しました。
+
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: アクセストークンが不正です。
+
+
+## メッセージ [/api/message]
+
+### メッセージ登録[POST]
+メッセージの新規追加を行います。
+
++ Request (application/json)
+
+    + Headers
+ 
+        Accept: application/json
+ 
+    + Attributes
+        + message: practice
+        + button_id: sample
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: メッセージを追加しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: アクセストークンが不正です。
+
+
+### メッセージ取得[GET]
+登録されているメッセージを取得します。
+
+
++ Request(application/json)
+
+    + Headers
+ 
+        Accept: application/json
+ 
+    + Attributes
+        + name: sample
+
++ Response 200 (application/json)
+
+    + Attribute
+
+       + practice: 5
+       + test : 10
+
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: アクセストークンが不正です。
+
+     
+### メッセージ削除[DELETE]
+登録されているメッセージを削除します。
+
+
++ Request
+
+    + Headers
+ 
+        Accept: application/json
+ 
+    + Attributes
+        + message: sample
 
 + Response 200 (application/json)
 
