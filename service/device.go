@@ -24,14 +24,14 @@ func RegistrationButton(pin string, mac string) (string, error) {
 // プッシュ回数追加
 // Todo BOCCOAPI追記
 func IncrementButton(button_id string) error {
-	button := model.Button{}
-	err := db.Where("button_id = ?", button_id).First(&button).Error
+	goal := model.Goal{}
+	err := db.Where("button_id = ?", button_id).First(&goal).Error
 	if err != nil {
 		return err
 	}
 
-	number, _ := strconv.Atoi(button.PushOn)
+	number, _ := strconv.Atoi(goal.Run)
 	number++
-	err = db.Model(&button).Update(&button).Update("push_on", strconv.Itoa(number)).Error
+	err = db.Model(&goal).Update(&goal).Update("run", strconv.Itoa(number)).Error
 	return err
 }

@@ -16,7 +16,7 @@ type goalimpl struct {
 func (g *goalimpl) CreateGoal(c *gin.Context) {
 	_, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest("ログインエラー", c)
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
@@ -25,15 +25,54 @@ func (g *goalimpl) CreateGoal(c *gin.Context) {
 		return
 	}
 	// 目標の重複チェック
-	if service.ExisByGoal(req.Contents) {
-		response.BadRequest("その目標は登録済みです。", c)
+	_, find := service.ExisByButtonIdFromGoal(req.ButtonId)
+	if find {
+		response.BadRequest(gin.H{"error": "そのボタンは目標登録済みです。"}, c)
 		return
 	}
 	err := service.RegistrationGoal(req.Contents, req.ButtonId)
 	if err != nil {
-		response.BadRequest("データベースエラー", c)
+		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
 	}
 	response.Json(gin.H{"success": "目標を追加しました。"}, c)
+}
 
+// 目標取得
+func (g *goalimpl) GetGoal(c *gin.Context) {
+	_, ok := authorizationCheck(c)
+	if !ok {
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		return
+	}
+
+	buttonId := c.Param("button_id")
+	// ボタンIDを検索
+	goal, find := service.ExisByButtonIdFromGoal(buttonId)
+	if !find {
+		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
+		return
+	}
+	response.Json(gin.H{"archive": goal[0].Apporoval, "goal": goal[0].Contents}, c)
+}
+
+// 目標削除
+func (g *goalimpl) DeleteGoal(c *gin.Context) {
+	_, ok := authorizationCheck(c)
+	if !ok {
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		return
+	}
+
+	buttonId := c.Param("button_id")
+	// ボタンIDを検索
+	goal, find := service.ExisByButtonIdFromGoal(buttonId)
+	if !find {
+		response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
+		return
+	}
+
+	// 目標の削除
+	service.DeleteGoal(goal[0].ButtonId)
+	response.Json(gin.H{"success": "目標を削除しました。"}, c)
 }

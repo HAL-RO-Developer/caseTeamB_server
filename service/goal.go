@@ -7,16 +7,26 @@ import (
 // 目標の新規登録
 func RegistrationGoal(goal string, deviceId string) error {
 	registration := model.Goal{
-		ButtonId: deviceId,
-		Contents: goal,
+		ButtonId:  deviceId,
+		Contents:  goal,
+		Run:       "0",
+		Apporoval: "0",
 	}
 	err := db.Create(&registration).Error
 	return err
 }
 
-// 目標検索
-func ExisByGoal(goal string) bool {
+// 目標取得
+func ExisByButtonIdFromGoal(buttonId string) ([]model.Goal, bool) {
 	var goals []model.Goal
-	db.Where("contents = ?", goal).Find(&goals)
-	return len(goals) != 0
+	db.Where("button_id = ?", buttonId).Find(&goals)
+	return goals, len(goals) != 0
+}
+
+// 目標削除
+func DeleteGoal(buttonId string) bool {
+	var goals model.Goal
+	db.Where("button_id = ?", buttonId).First(&goals)
+	db.Delete(goals)
+	return true
 }

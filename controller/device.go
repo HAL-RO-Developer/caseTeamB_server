@@ -19,11 +19,11 @@ func (d *deviceimpl) DeviceRegistration(c *gin.Context) {
 		return
 	}
 	if !service.ExisByPin(req.Pin) {
-		response.BadRequest("pinが見つかりません。", c)
+		response.BadRequest(gin.H{"error": "pinが見つかりません。"}, c)
 	} else {
 		button_id, err := service.RegistrationButton(req.Pin, req.Mac)
 		if err != nil {
-			response.BadRequest("データベースエラー", c)
+			response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 			return
 		}
 		response.Json(gin.H{"button_id": button_id}, c)
@@ -38,11 +38,11 @@ func (d *deviceimpl) DeviceIncrement(c *gin.Context) {
 	}
 
 	if !service.ExisByButtonId(req.ButtonId) {
-		response.BadRequest("button_idが見つかりません。", c)
+		response.BadRequest(gin.H{"error": "button_idが見つかりません。"}, c)
 	} else {
 		err := service.IncrementButton(req.ButtonId)
 		if err != nil {
-			response.BadRequest("データベースエラー", c)
+			response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 			return
 		}
 		response.Json(gin.H{"success": "プッシュ回数を追加しました。"}, c)

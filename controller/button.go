@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
-	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
 )
@@ -17,13 +16,13 @@ type buttonimpl struct {
 func (b *buttonimpl) CreateNewButton(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest("ログインエラー", c)
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
 	pin, err := service.CreateButton(name)
 	if err != nil {
-		response.BadRequest("データベースエラー", c)
+		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
 	}
 	response.Json(gin.H{"pin": pin}, c)
@@ -34,7 +33,7 @@ func (b *buttonimpl) ListButton(c *gin.Context) {
 	var buttonId []string
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest("ログインエラー", c)
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
@@ -46,7 +45,7 @@ func (b *buttonimpl) ListButton(c *gin.Context) {
 		response.Json(gin.H{"button_id": buttonId}, c)
 		return
 	}
-	response.BadRequest("ボタンが登録されていません。", c)
+	response.BadRequest(gin.H{"error": "ボタンが登録されていません。"}, c)
 	return
 }
 
@@ -54,19 +53,16 @@ func (b *buttonimpl) ListButton(c *gin.Context) {
 func (b *buttonimpl) DeleteButton(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest("ログインエラー", c)
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
-	req, ok := validation.ButtonCheck(c)
-	if !ok {
-		return
-	}
+	buttonId := c.PostForm("button_id")
 
-	success := service.DeleteButtonId(name, req.ButtonId)
+	success := service.DeleteButtonId(name, buttonId)
 	if success {
 		response.Json(gin.H{"success": "ボタンIDを削除しました。"}, c)
 		return
 	}
-	response.BadRequest("ボタンIDが見つかりません。", c)
+	response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
 }

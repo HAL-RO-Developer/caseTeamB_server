@@ -14,7 +14,7 @@ func ButtonRegistrationCheck(c *gin.Context) (PostDevice, bool) {
 	var req PostDevice
 	err := c.BindJSON(&req)
 	if err != nil {
-		response.BadRequest("pinもしくはmacアドレスが未入力です。", c)
+		response.BadRequest(gin.H{"error": "pinもしくはmacアドレスが未入力です。"}, c)
 		return req, false
 	}
 	return req, true

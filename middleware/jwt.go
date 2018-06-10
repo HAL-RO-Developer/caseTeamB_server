@@ -19,7 +19,7 @@ func Login(c *gin.Context) {
 	}
 	user, ok := service.User.Login(req.Name, req.Password)
 	if !ok {
-		response.BadRequest("ログインエラー", c)
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 	claims := map[string]string{

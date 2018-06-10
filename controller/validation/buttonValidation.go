@@ -13,7 +13,7 @@ func ButtonCheck(c *gin.Context) (Button, bool) {
 	var req Button
 	err := c.BindJSON(&req)
 	if err != nil {
-		response.BadRequest("ボタンIDが入力されていません。", c)
+		response.BadRequest(gin.H{"error": "ボタンIDが入力されていません。"}, c)
 		return req, false
 	}
 	return req, true

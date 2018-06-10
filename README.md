@@ -11,10 +11,6 @@ FORMAT: 1A
 
 + Request (applicaition/json)
 
-    + Headers
- 
-        Accept: application/json
- 
     + Attribute
         + name: sample
         + pass: password
@@ -39,10 +35,6 @@ FORMAT: 1A
 
 + Request (applicaition/json)
 
-    + Headers
- 
-         Accept: application/json
- 
     + Attribute
         + name: sample
         + pass: password
@@ -79,8 +71,9 @@ FORMAT: 1A
     + Attribute
 
         + error: ログインエラー
-     
-## ボタン [/api/button]
+
+
+## ボタン [/api/button/{button_id}]
 
 ### ボタンID発行[POST]
 新規登録するボタンIDの発行を行います。
@@ -131,13 +124,14 @@ FORMAT: 1A
 ### ボタンID削除[DELETE]
 登録されているボタンIDを削除します。
 
-+ Request (application/json)
++ Parameters
+    + button_id: sample
+
++ Request
     + Headers
 
             Authorization: token
-    + Attribute
 
-        + button_id: sample
 
 + Response 200 (application/json)
 
@@ -160,10 +154,6 @@ FORMAT: 1A
 
 
 + Request (applicaition/json)
-
-    + Headers
- 
-        Accept: application/json
  
     + Attribute
         + pin: 0000
@@ -187,10 +177,6 @@ FORMAT: 1A
 
 + Request (applicaition/json)
 
-    + Headers
- 
-        Accept: application/json
- 
     + Attributes
         + button_id: sample
 
@@ -210,17 +196,13 @@ FORMAT: 1A
 
      
 
-## 目標 [/api/goal]
+## 目標 [/api/goal/{button_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
 
 + Request (application/json)
 
-    + Headers
- 
-        Accept: application/json
- 
     + Attributes
         + goal: practice
         + button_id: sample
@@ -239,24 +221,23 @@ FORMAT: 1A
 
 
 ### 目標取得[GET]
-登録されている目標を取得します。
+登録されている目標と承認済み実行回数を取得します。
 
 
-+ Request(application/json)
++ Parameters
+    + button_id: sample
 
++ Request
     + Headers
- 
-        Accept: application/json
- 
-    + Attributes
-        + button_id: sample
+
+            Authorization: token
 
 + Response 200 (application/json)
 
     + Attribute
 
-        + goal: practice
         + archive : 5
+        + goal: practice
 
 
 + Response 400 (application/json)
@@ -270,14 +251,13 @@ FORMAT: 1A
 登録されている目標を削除します。
 
 
-+ Request
++ Parameters
+    + button_id: sample
 
++ Request
     + Headers
- 
-        Accept: application/json
- 
-    + Attributes
-        + button_id: sample
+
+            Authorization: token
 
 + Response 200 (application/json)
 
@@ -292,18 +272,59 @@ FORMAT: 1A
 
         + error: ログインエラー
 
+## 目標達成承認/非承認 [/api/push/{button_id}/{goal}]
 
-## メッセージ [/api/message]
+### 達成承認 [PUT]
+目標達成の承認を行います。
+
++ Request (application/json)
+
+    + Attributes
+        + goal: practice
+        + button_id: sample
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 目標達成を承認しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### 達成非承認 [DELETE]
+目標達成を非承認にします。
+
++ Parameters
+    + button_id: sample
+    + goal: practice
+
++ Request
+    + Headers
+
+            Authorization: token
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 目標達成を非承認にしました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+## メッセージ [/api/message/{name,message}]
 
 ### メッセージ登録[POST]
 メッセージの新規追加を行います。
 
 + Request (application/json)
 
-    + Headers
- 
-        Accept: application/json
- 
     + Attributes
         + message: practice
         + button_id: sample
@@ -322,18 +343,16 @@ FORMAT: 1A
 
 
 ### メッセージ取得[GET]
-登録されているメッセージを取得します。
+登録されているメッセージと承認済み実行回数を取得します。
 
 
-+ Request(application/json)
++ Parameters
+    + name: sample
 
++ Request
     + Headers
- 
-        Accept: application/json
- 
-    + Attributes
-        + name: sample
 
+            Authorization: token
 + Response 200 (application/json)
 
     + Attribute
@@ -353,14 +372,13 @@ FORMAT: 1A
 登録されているメッセージを削除します。
 
 
-+ Request
++ Parameters
+    + message: sample
 
++ Request
     + Headers
- 
-        Accept: application/json
- 
-    + Attributes
-        + message: sample
+
+            Authorization: token
 
 + Response 200 (application/json)
 

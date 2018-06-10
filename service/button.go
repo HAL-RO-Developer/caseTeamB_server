@@ -16,7 +16,6 @@ func CreateButton(name string) (string, error) {
 	button := model.Button{
 		Name:     name,
 		ButtonId: deviceID,
-		PushOn:   "0",
 		Pin:      pin,
 	}
 	err := db.Create(&button).Error
@@ -71,7 +70,7 @@ func ExisByPin(pin string) bool {
 	return len(buttons) != 0
 }
 
-// データベースからボタンID一覧取得(ユーザー名から)
+// データベースからボタンID取得(ユーザー名から)
 func GetButtonId(name string) ([]model.Button, bool) {
 	var buttons []model.Button
 	db.Where("name = ?", name).Find(&buttons)
@@ -91,7 +90,7 @@ func DeleteButtonId(name string, buttonId string) bool {
 	return true
 }
 
-// 1ユーザーの最初"のボタンIDの削除
+// 1ユーザーの最初のボタンIDの削除
 func DeleteButtonFirst(name string) {
 	var buttons model.Button
 	db.Where("name = ?", name).First(&buttons)

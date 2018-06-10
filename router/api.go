@@ -15,7 +15,7 @@ func apiRouter(api *gin.RouterGroup) {
 	// ボタンID発行、取得、削除
 	api.POST("/button", Button.CreateNewButton)
 	api.GET("/button", Button.ListButton)
-	api.DELETE("/button", Button.DeleteButton)
+	api.DELETE("/button/:device_id", Button.DeleteButton)
 
 	// ボタン登録、プッシュ回数追加
 	api.POST("/device", Device.DeviceRegistration)
@@ -23,7 +23,7 @@ func apiRouter(api *gin.RouterGroup) {
 
 	// 目標登録、取得、削除
 	api.POST("/goal", Goal.CreateGoal)
-	api.GET("/goal")
-	api.DELETE("/goal")
+	api.GET("/goal/:button_id", Goal.GetGoal)
+	api.DELETE("/goal/:button_id", Goal.DeleteGoal)
 
 }

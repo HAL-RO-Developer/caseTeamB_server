@@ -17,12 +17,12 @@ func (u *userimpl) Create(c *gin.Context) {
 	var user model.User
 	err := c.BindJSON(&user)
 	if err != nil {
-		response.BadRequest("ユーザー名またはパスワードが未入力です。", c)
+		response.BadRequest(gin.H{"error": "ユーザー名またはパスワードが未入力です。"}, c)
 		return
 	}
 
 	if service.User.ExisByName(user.Name) {
-		response.BadRequest("登録済みのユーザー名です。", c)
+		response.BadRequest(gin.H{"error": "登録済みのユーザー名です。"}, c)
 	} else {
 		user = service.User.Store(user)
 		response.Json(gin.H{"success": "ユーザー登録を行いました。"}, c)
@@ -34,7 +34,7 @@ func (u *userimpl) Create(c *gin.Context) {
 func (u *userimpl) UserDelete(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest("ログインエラー", c)
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 

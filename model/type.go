@@ -21,15 +21,16 @@ type Button struct {
 	Model
 	Name     string `json:"name"`
 	ButtonId string `json:"button_id"`
-	PushOn   string `json:"push_on"`
 	Pin      string `json:"pin"`
 	Mac      string `json:"mac"`
 }
 
 type Goal struct {
 	Model
-	ButtonId string `json:"button_id"`
-	Contents string `json:"goal"`
+	ButtonId  string `json:"button_id"`
+	Contents  string `json:"goal"`
+	Run       string `json:"run"`
+	Apporoval string `json:"approval"`
 }
 
 type Message struct {
