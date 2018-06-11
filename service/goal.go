@@ -7,10 +7,10 @@ import (
 // 目標の新規登録
 func RegistrationGoal(goal string, deviceId string) error {
 	registration := model.Goal{
-		ButtonId:  deviceId,
-		Contents:  goal,
-		Run:       "0",
-		Apporoval: "0",
+		ButtonId: deviceId,
+		Contents: goal,
+		Run:      "0",
+		Approval: "0",
 	}
 	err := db.Create(&registration).Error
 	return err
@@ -26,7 +26,10 @@ func ExisByButtonIdFromGoal(buttonId string) ([]model.Goal, bool) {
 // 目標削除
 func DeleteGoal(buttonId string) bool {
 	var goals model.Goal
-	db.Where("button_id = ?", buttonId).First(&goals)
+	err := db.Where("button_id = ?", buttonId).First(&goals).Error
+	if err != nil {
+		return false
+	}
 	db.Delete(goals)
 	return true
 }

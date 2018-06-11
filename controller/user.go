@@ -29,7 +29,6 @@ func (u *userimpl) Create(c *gin.Context) {
 	}
 }
 
-// TODO 目標関連処理実装後追記
 // ユーザー削除
 func (u *userimpl) UserDelete(c *gin.Context) {
 	name, ok := authorizationCheck(c)
@@ -41,11 +40,17 @@ func (u *userimpl) UserDelete(c *gin.Context) {
 	buttons, find := service.GetButtonId(name)
 	if find {
 		for i := 0; i < len(buttons); i++ {
+			service.DeleteGoal(buttons[i].ButtonId)
+			service.DeleteMessage(buttons[i].ButtonId)
 			service.DeleteButtonFirst(name)
 		}
 	}
-	service.DeleteUser(name)
-	response.Json(gin.H{"success": "ユーザー情報を削除しました。"}, c)
+
+	if service.DeleteUser(name) {
+		response.Json(gin.H{"success": "ユーザー情報を削除しました。"}, c)
+		return
+	}
+	response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 }
 
 //	トークンの検証

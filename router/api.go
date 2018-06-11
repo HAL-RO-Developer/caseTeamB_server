@@ -26,4 +26,12 @@ func apiRouter(api *gin.RouterGroup) {
 	api.GET("/goal/:button_id", Goal.GetGoal)
 	api.DELETE("/goal/:button_id", Goal.DeleteGoal)
 
+	// 目標達成承認、非承認
+	api.PUT("/approval", Approval.ApprovalGoal)
+	api.DELETE("/approval/:button_id", Approval.NotApprovalGoal)
+
+	// メッセージ登録、取得、削除
+	api.POST("/message", Message.NewMessage)
+	api.GET("/message/:button_id", Message.GetMessage)
+	api.DELETE("/message/:button_id", Message.DeleteMessage)
 }

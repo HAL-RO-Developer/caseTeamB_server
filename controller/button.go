@@ -59,8 +59,7 @@ func (b *buttonimpl) DeleteButton(c *gin.Context) {
 
 	buttonId := c.PostForm("button_id")
 
-	success := service.DeleteButtonId(name, buttonId)
-	if success {
+	if service.DeleteButtonId(name, buttonId) {
 		response.Json(gin.H{"success": "ボタンIDを削除しました。"}, c)
 		return
 	}

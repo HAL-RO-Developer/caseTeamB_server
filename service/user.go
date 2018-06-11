@@ -33,8 +33,12 @@ func (u *user) Login(name, pass string) (*model.User, bool) {
 }
 
 // ユーザー情報削除
-func DeleteUser(name string) {
+func DeleteUser(name string) bool {
 	var user model.User
-	db.Where("name = ?", name).First(&user)
+	err := db.Where("name = ?", name).First(&user).Error
+	if err != nil {
+		return false
+	}
 	db.Delete(&user)
+	return true
 }

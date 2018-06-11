@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -82,7 +81,6 @@ func DeleteButtonId(name string, buttonId string) bool {
 	var buttons model.Button
 	db.Where("name = ? and button_id = ?", name, buttonId).First(&buttons)
 	if buttons.ButtonId == "" {
-		fmt.Println("fail")
 		return false
 	}
 
@@ -91,8 +89,12 @@ func DeleteButtonId(name string, buttonId string) bool {
 }
 
 // 1ユーザーの最初のボタンIDの削除
-func DeleteButtonFirst(name string) {
+func DeleteButtonFirst(name string) bool {
 	var buttons model.Button
-	db.Where("name = ?", name).First(&buttons)
+	err := db.Where("name = ?", name).First(&buttons).Error
+	if err != nil {
+		return false
+	}
 	db.Delete(buttons)
+	return true
 }

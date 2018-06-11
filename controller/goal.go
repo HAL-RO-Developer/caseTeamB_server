@@ -53,7 +53,7 @@ func (g *goalimpl) GetGoal(c *gin.Context) {
 		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
 		return
 	}
-	response.Json(gin.H{"archive": goal[0].Apporoval, "goal": goal[0].Contents}, c)
+	response.Json(gin.H{"archive": goal[0].Approval, "goal": goal[0].Contents}, c)
 }
 
 // 目標削除
@@ -66,13 +66,16 @@ func (g *goalimpl) DeleteGoal(c *gin.Context) {
 
 	buttonId := c.Param("button_id")
 	// ボタンIDを検索
-	goal, find := service.ExisByButtonIdFromGoal(buttonId)
+	_, find := service.ExisByButtonIdFromGoal(buttonId)
 	if !find {
 		response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
 		return
 	}
 
 	// 目標の削除
-	service.DeleteGoal(goal[0].ButtonId)
-	response.Json(gin.H{"success": "目標を削除しました。"}, c)
+	if service.DeleteGoal(buttonId) {
+		response.Json(gin.H{"success": "目標を削除しました。"}, c)
+		return
+	}
+	response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 }
