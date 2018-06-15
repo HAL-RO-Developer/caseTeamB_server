@@ -7,7 +7,7 @@ import (
 
 type Message struct {
 	ButtonId  string `json:"button_id"`
-	Condition string `json:"condition"`
+	Condition int    `json:"condition"`
 	Message   string `json:"message"`
 }
 

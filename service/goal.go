@@ -9,8 +9,7 @@ func RegistrationGoal(goal string, deviceId string) error {
 	registration := model.Goal{
 		ButtonId: deviceId,
 		Contents: goal,
-		Run:      "0",
-		Approval: "0",
+		Run:      0,
 	}
 	err := db.Create(&registration).Error
 	return err

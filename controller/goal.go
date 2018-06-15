@@ -53,7 +53,7 @@ func (g *goalimpl) GetGoal(c *gin.Context) {
 		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
 		return
 	}
-	response.Json(gin.H{"archive": goal[0].Approval, "goal": goal[0].Contents}, c)
+	response.Json(gin.H{"archive": goal[0].Run, "goal": goal[0].Contents}, c)
 }
 
 // 目標削除

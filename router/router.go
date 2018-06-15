@@ -11,8 +11,18 @@ func GetRouter() *gin.Engine {
 	r.Use(cors)
 
 	r.GET("/log", log)
-	api := r.Group("/api")
-	apiRouter(api)
+
+	// ユーザー登録
+	user := r.Group("/")
+	userRouter(user)
+
+	// teamA
+	work := r.Group("/work")
+	workRouter(work)
+
+	// teamB
+	goal := r.Group("/goal")
+	goalRouter(goal)
 	return r
 
 }

@@ -6,32 +6,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func apiRouter(api *gin.RouterGroup) {
+func userRouter(user *gin.RouterGroup) {
 	// ユーザー登録、サインアップ
-	api.POST("/signup", User.Create)
-	api.POST("/signin", middleware.Login)
-	api.DELETE("/user", User.UserDelete)
+	user.POST("/signup", User.Create)
+	user.POST("/signin", middleware.Login)
+}
+
+func workRouter(work *gin.RouterGroup) {
+
+}
+
+func goalRouter(goal *gin.RouterGroup) {
+	// ユーザー情報削除
+	goal.DELETE("/user", User.UserDeleteForGoal)
+
+	// ユーザー情報追加登録
 
 	// ボタンID発行、取得、削除
-	api.POST("/button", Button.CreateNewButton)
-	api.GET("/button", Button.ListButton)
-	api.DELETE("/button/:device_id", Button.DeleteButton)
+	goal.POST("/button", Button.CreateNewButton)
+	goal.GET("/button", Button.ListButton)
+	goal.DELETE("/button/:device_id", Button.DeleteButton)
 
 	// ボタン登録、プッシュ回数追加
-	api.POST("/device", Device.DeviceRegistration)
-	api.PUT("/device", Device.DeviceIncrement)
+	goal.POST("/device", Device.DeviceRegistration)
+	goal.PUT("/device", Device.DeviceIncrement)
 
 	// 目標登録、取得、削除
-	api.POST("/goal", Goal.CreateGoal)
-	api.GET("/goal/:button_id", Goal.GetGoal)
-	api.DELETE("/goal/:button_id", Goal.DeleteGoal)
+	goal.POST("/goal", Goal.CreateGoal)
+	goal.GET("/goal/:button_id", Goal.GetGoal)
+	goal.DELETE("/goal/:button_id", Goal.DeleteGoal)
 
-	// 目標達成承認、非承認
-	api.PUT("/approval", Approval.ApprovalGoal)
-	api.DELETE("/approval/:button_id", Approval.NotApprovalGoal)
+	// 目標達成操作
+	goal.PUT("/approval", Approval.ApprovalGoal)
 
 	// メッセージ登録、取得、削除
-	api.POST("/message", Message.NewMessage)
-	api.GET("/message/:button_id", Message.GetMessage)
-	api.DELETE("/message/:button_id", Message.DeleteMessage)
+	goal.POST("/message", Message.NewMessage)
+	goal.GET("/message/:button_id", Message.GetMessage)
+	goal.DELETE("/message/:button_id", Message.DeleteMessage)
 }

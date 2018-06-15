@@ -1,4 +1,4 @@
 develop:
   dialect: mysql
-  datasource: root:@tcp(127.0.0.1:3306)/goalButton?parseTime=true&collation=utf8_general_ci&interpolateParams=true&loc=Local
+  datasource: root:@tcp(127.0.0.1:3306)/case_study?parseTime=true&collation=utf8_general_ci&interpolateParams=true&loc=Local
   dir: migration

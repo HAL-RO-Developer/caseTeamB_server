@@ -5,7 +5,7 @@ import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
-	jwt "github.com/makki0205/gojwt"
+	"github.com/makki0205/gojwt"
 )
 
 var User = userimpl{}
@@ -20,7 +20,6 @@ func (u *userimpl) Create(c *gin.Context) {
 		response.BadRequest(gin.H{"error": "ユーザー名またはパスワードが未入力です。"}, c)
 		return
 	}
-
 	if service.User.ExisByName(user.Name) {
 		response.BadRequest(gin.H{"error": "登録済みのユーザー名です。"}, c)
 	} else {
@@ -30,7 +29,7 @@ func (u *userimpl) Create(c *gin.Context) {
 }
 
 // ユーザー削除
-func (u *userimpl) UserDelete(c *gin.Context) {
+func (u *userimpl) UserDeleteForGoal(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
 		response.BadRequest(gin.H{"error": "ログインエラー"}, c)

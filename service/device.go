@@ -1,8 +1,6 @@
 package service
 
 import (
-	"strconv"
-
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
 
@@ -30,8 +28,7 @@ func IncrementButton(button_id string) error {
 		return err
 	}
 
-	number, _ := strconv.Atoi(goal.Run)
-	number++
-	err = db.Model(&goal).Update(&goal).Update("run", strconv.Itoa(number)).Error
+	goal.Run++
+	err = db.Model(&goal).Update(&goal).Update("run", goal.Run).Error
 	return err
 }

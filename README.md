@@ -2,7 +2,7 @@ FORMAT: 1A
 
 # BOCCO x 目標ボタンAPI [/api]
 
-## ユーザー登録 [/api/signup]
+## ユーザー登録 [/signup]
 ユーザー情報の登録、およびサインインするためのAPI
 
 
@@ -14,7 +14,6 @@ FORMAT: 1A
     + Attribute
         + name: sample
         + pass: password
-
 
 + Response 200 (application/json)
 
@@ -28,7 +27,7 @@ FORMAT: 1A
         + error: 登録済みのユーザー名です。
 
  
-## サインイン [/api/signin]
+## サインイン [/signin]
   
 ### サインイン [POST]
 登録されているユーザー情報を元にサインインを行います。
@@ -51,7 +50,7 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## ユーザー削除 [/api/user]
+## ユーザー削除 [/goal/user]
 ### ユーザー削除[DELETE]
 登録されているユーザー情報を削除します。
 
@@ -73,7 +72,7 @@ FORMAT: 1A
         + error: ログインエラー
 
 
-## ボタン [/api/button/{button_id}]
+## ボタン [/goal/button/{button_id}]
 
 ### ボタンID発行[POST]
 新規登録するボタンIDの発行を行います。
@@ -147,7 +146,7 @@ FORMAT: 1A
 
      
 
-## デバイス [/api/device]
+## デバイス [/goal/device]
 
 ### ボタン登録[POST]
 ボタンIDと各ボタンデバイスとの紐付けを行います。
@@ -196,7 +195,7 @@ FORMAT: 1A
 
      
 
-## 目標 [/api/goal/{button_id}]
+## 目標 [/goal/goal/{button_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
@@ -221,7 +220,7 @@ FORMAT: 1A
 
 
 ### 目標取得[GET]
-登録されている目標と承認済み実行回数を取得します。
+登録されている目標と実行回数を取得します。
 
 
 + Parameters
@@ -236,7 +235,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + archive : 5
+        + run : 5 (number)
         + goal: practice
 
 
@@ -272,10 +271,10 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## 目標達成承認/非承認 [/api/approval/{button_id}]
+## 目標達成承認/非承認 [/goal/approval]
 
-### 達成承認 [PUT]
-目標達成の承認を行います。
+### 達成承認 [POST]
+目標実行数を変更します。
 
 + Request (application/json)
     + Headers
@@ -284,6 +283,7 @@ FORMAT: 1A
 
     + Attributes
         + button_id: sample
+        + approval : 1 (number) - 増減値
 
 + Response 200 (application/json)
 
@@ -297,30 +297,7 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-### 達成非承認 [DELETE]
-目標達成を非承認にします。
-
-+ Parameters
-    + button_id: samples
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: 目標達成を非承認にしました。
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-## メッセージ [/api/message/{button_id}]
+## メッセージ [/goal/message/{button_id}]
 
 ### メッセージ登録[POST]
 メッセージの新規追加を行います。
@@ -333,7 +310,7 @@ FORMAT: 1A
     + Attributes
 
         + button_id: sample
-        + condition : 5
+        + condition : 5 (number)
         + message: practice
 
 + Response 200 (application/json)
@@ -363,7 +340,7 @@ FORMAT: 1A
 
     + Attribute
 
-       + practice: 5
+       + practice: 5 (number)
 
 + Response 400 (application/json)
 
@@ -383,7 +360,6 @@ FORMAT: 1A
     + Headers
 
             Authorization: token
-
 + Response 200 (application/json)
 
     + Attribute

@@ -5,7 +5,7 @@ import (
 )
 
 // メッセージ新規登録
-func RegistrationMessage(buttonId string, condition string, message string) error {
+func RegistrationMessage(buttonId string, condition int, message string) error {
 	registration := model.Message{
 		ButtonId:  buttonId,
 		Condition: condition,
