@@ -21,9 +21,9 @@ func RegistrationButton(pin string, mac string) (string, error) {
 
 // プッシュ回数追加
 // Todo BOCCOAPI追記
-func IncrementButton(goal_id string) error {
+func IncrementButton(device_id string) error {
 	goal := model.GoalDate{}
-	err := db.Where("goal_id = ?", goal_id).First(&goal).Error
+	err := db.Where("device_id = ?", device_id).First(&goal).Error
 	if err != nil {
 		return err
 	}
