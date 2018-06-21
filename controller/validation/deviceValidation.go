@@ -13,7 +13,7 @@ type PostDevice struct {
 func ButtonRegistrationCheck(c *gin.Context) (PostDevice, bool) {
 	var req PostDevice
 	err := c.BindJSON(&req)
-	if err != nil {
+	if err != nil || req.Mac == "" || req.Pin == "" {
 		response.BadRequest(gin.H{"error": "pinもしくはmacアドレスが未入力です。"}, c)
 		return req, false
 	}

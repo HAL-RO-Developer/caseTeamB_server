@@ -6,16 +6,17 @@ import (
 )
 
 type Goal struct {
-	ButtonId string `json:"button_id"`
-	Contents string `json:"goal"`
+	DeviceId string `json:"device_id"`
+	Content  string `json:"goal"`
 }
 
 func GoalRegistrationCheck(c *gin.Context) (Goal, bool) {
 	var req Goal
 	err := c.BindJSON(&req)
-	if err != nil {
-		response.BadRequest(gin.H{"error": "button_idもしくはcontentsが未入力です。"}, c)
+	if err != nil || req.DeviceId == "" || req.Content == "" {
+		response.BadRequest(gin.H{"error": "device_idもしくはcontentsが未入力です。"}, c)
 		return req, false
 	}
+
 	return req, true
 }

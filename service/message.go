@@ -5,9 +5,9 @@ import (
 )
 
 // メッセージ新規登録
-func RegistrationMessage(buttonId string, condition int, message string) error {
-	registration := model.Message{
-		ButtonId:  buttonId,
+func RegistrationMessage(deviceId string, condition int, message string) error {
+	registration := model.CustomMessage{
+		DeviceId:  deviceId,
 		Condition: condition,
 		Message:   message,
 	}
@@ -16,16 +16,16 @@ func RegistrationMessage(buttonId string, condition int, message string) error {
 }
 
 // 目標取得
-func ExisByButtonIdFromMessage(buttonId string) ([]model.Message, bool) {
-	var messages []model.Message
-	db.Where("button_id = ?", buttonId).Find(&messages)
+func ExisByButtonIdFromMessage(goalId string) ([]model.CustomMessage, bool) {
+	var messages []model.CustomMessage
+	db.Where("goal_id = ?", goalId).Find(&messages)
 	return messages, len(messages) != 0
 }
 
 // 目標削除
-func DeleteMessage(buttonId string) bool {
-	var message model.Message
-	err := db.Where("button_id = ?", buttonId).First(&message).Error
+func DeleteMessage(goalId string) bool {
+	var message model.CustomMessage
+	err := db.Where("goal_id = ?", goalId).First(&message).Error
 	if err != nil {
 		return false
 	}

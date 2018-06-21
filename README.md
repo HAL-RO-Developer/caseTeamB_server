@@ -1,10 +1,10 @@
 FORMAT: 1A
 
-# BOCCO x 目標ボタンAPI [/api]
+# BOCCO x 目標ボタンAPI一覧
 
+# Group A/B共通
 ## ユーザー登録 [/signup]
 ユーザー情報の登録、およびサインインするためのAPI
-
 
 ### サインアップ [POST]
 ユーザー情報の登録を行います。
@@ -50,6 +50,191 @@ FORMAT: 1A
 
         + error: ログインエラー
 
+## 子供情報設定 [/child]
+### 子供情報追加[POST]
+子供の誕生日と性別、ニックネームを設定します。
+
++ Request(application/json)
+    + Headers
+
+            Authorization: token
+
+    + Attributes
+        + nickname: sample
+        + birthday : `2000-01-01`
+        + sex : 0 (number) - 0:男、1:女
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 子供情報を追加しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### 子供情報取得[GET]
+子供ID,誕生日,ニックネーム,性別の一覧を取得します。
+
++ Request(application/json)
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + data (array)
+            + (object)
+                + child_id: 1 (number),
+                + birthday: `2016-10-01T09:00:00+09:00`
+                + nickname: sample
+                + sex: 0 (number) - 0:男、1:女
+
+            + (object)
+                + child_id: 2 (number),
+                + birthday: `2017-03-19T09:00:00+09:00`
+                + nickname: index
+                + sex: 1 (number) - 0:男、1:女
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### 子供情報削除[DELETE]
+登録されている子どもIDの情報を削除します。
+
++ Request(application/json)
+    + Headers
+
+            Authorization: token
+
+    + Attributes
+        + child_id: 1 (number)
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 削除しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+## デバイス [/device/{goal_id}]
+
+### デバイスID発行[POST]
+新規登録するデバイスIDの発行を行います。
+
++ Request(application/json)
+    + Headers
+
+            Authorization: token
+
+    + Attributes
+        + child_id(number): 1
+
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + pin: 0000
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+     
+
+### デバイス一覧取得[GET]
+現在登録されているデバイスIDの一覧を取得します。
+
++ Request(application/json)
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + List (array)
+            + (object)
+                + goal_id: sample
+                + goal_status: true (boolean)
+
+            + (object)
+                + goal_id: index
+                + goal_status: false (boolean)
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### デバイスID削除[DELETE]
+登録されているデバイスIDを削除します。
+
++ Parameters
+    + goal_id: sample
+
++ Request
+    + Headers
+
+            Authorization: token
+
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: ボタンIDを削除しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+## デバイス紐付け [/registration]
+
+### ボタン登録[POST]
+ボタンIDと各ボタンデバイスとの紐付けを行います。
+
+
++ Request (applicaition/json)
+ 
+    + Attribute
+        + pin: 0000
+        + mac: abc123
+
+
++ Response 200 (application/json)
+
+ + Attribute
+
+      + goal_id: sample
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: pinが見つかりません。
+
+# Group BOCCOx目標ボタン用API
+
 ## ユーザー削除 [/goal/user]
 ### ユーザー削除[DELETE]
 登録されているユーザー情報を削除します。
@@ -71,113 +256,14 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-
-## ボタン [/goal/button/{button_id}]
-
-### ボタンID発行[POST]
-新規登録するボタンIDの発行を行います。
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + pin: 0000
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-     
-
-### ボタン一覧取得[GET]
-現在登録されているボタンIDの一覧を取得します。
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + button_id (array)
-            + sample,
-            + test
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-     
-     
-### ボタンID削除[DELETE]
-登録されているボタンIDを削除します。
-
-+ Parameters
-    + button_id: sample
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: ボタンIDを削除しました。
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-     
-
-## デバイス [/goal/device]
-
-### ボタン登録[POST]
-ボタンIDと各ボタンデバイスとの紐付けを行います。
-
-
-+ Request (applicaition/json)
- 
-    + Attribute
-        + pin: 0000
-        + mac: abc123
-
-
-+ Response 200 (application/json)
-
- + Attribute
-
-      + button_id: sample
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: pinが見つかりません。
-
-### ボタンプッシュ[PUT]
+## プッシュ回数増加 [/goal/push]
+### ボタンプッシュ[POST]
 目標ボタンが押された回数を記録します。
 
 + Request (applicaition/json)
 
     + Attributes
-        + button_id: sample
+        + goal_id: sample
 
 + Response 200 (application/json)
 
@@ -193,17 +279,18 @@ FORMAT: 1A
         + error: ボタンIDが見つかりません。
 
 
-     
-
-## 目標 [/goal/goal/{button_id}]
+## 目標 [/goal/goal/{goal_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
 
 + Request (application/json)
+    + Headers
+
+            Authorization: token
 
     + Attributes
-        + button_id: sample
+        + goal_id: sample
         + goal: practice
 
 + Response 200 (application/json)
@@ -224,7 +311,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + button_id: sample
+    + goal_id: sample
 
 + Request
     + Headers
@@ -235,8 +322,10 @@ FORMAT: 1A
 
     + Attribute
 
+        + created_at: `2018-06-21T13:35:08+09:00`
         + run : 5 (number)
         + goal: practice
+        + updated_at: `2018-06-21T13:37:21+09:00`,
 
 
 + Response 400 (application/json)
@@ -251,7 +340,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + button_id: sample
+    + goal_id: sample
 
 + Request
     + Headers
@@ -282,7 +371,7 @@ FORMAT: 1A
             Authorization: token
 
     + Attributes
-        + button_id: sample
+        + goal_id: sample
         + approval : 1 (number) - 増減値
 
 + Response 200 (application/json)
@@ -297,7 +386,7 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## メッセージ [/goal/message/{button_id}]
+## メッセージ [/goal/message/{goal_id}]
 
 ### メッセージ登録[POST]
 メッセージの新規追加を行います。
@@ -309,7 +398,7 @@ FORMAT: 1A
 
     + Attributes
 
-        + button_id: sample
+        + goal_id: sample
         + condition : 5 (number)
         + message: practice
 
@@ -330,7 +419,7 @@ FORMAT: 1A
 登録されているメッセージと承認済み実行回数を取得します。
 
 + Parameters
-    + button_id: sample
+    + goal_id: sample
 
 + Request
     + Headers
@@ -354,7 +443,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + button_id: sample
+    + goal_id: sample
 
 + Request
     + Headers

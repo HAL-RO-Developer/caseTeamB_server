@@ -3,8 +3,8 @@ package model
 // ドリル情報
 type Book struct {
 	Model
-	BookId  string `json:"book_id"`
-	GenreId int    `json:"genre_id"`
+	BookId  int `json:"book_id"`
+	GenreId int `json:"genre_id"`
 }
 
 // ドリル分野
@@ -17,18 +17,17 @@ type Genre struct {
 // ドリル問題情報
 type Question struct {
 	Model
-	BookId     string `json:"book_id"`
+	Mac        string `json:"mac"` // 読み取り機のmacアドレス
 	QuestionNo int    `json:"q_no"`
-	Sentence   string `json:"sentence"`
-	Answer     string `json:"answer"`
+	Sentence   string `json:"sentence"` // 問題文
+	Correct    int    `json:"correct"`
 }
 
 // 回答の記録
 type Record struct {
 	Model
-	Name       string `json:"name" binding:"required"`
-	BookId     string `json:"book_id"`
+	Mac        string `json:"mac"` // 読み取り機のmacアドレス
+	BookId     int    `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
-	Reply      string `json:"reply"`
-	Correct    bool   `json:"correct"`
+	Answer     int    `json:"answer"` // ユーザーの回答
 }

@@ -26,19 +26,19 @@ func (m *messageimpl) NewMessage(c *gin.Context) {
 	}
 
 	// データベースへの重複防止
-	_, find := service.ExisByButtonIdFromGoal(req.ButtonId)
+	_, find := service.ExisByDeviceIdFromGoal(req.GoalId)
 	if !find {
 		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
 		return
 	}
-	_, find = service.ExisByButtonIdFromMessage(req.ButtonId)
+	_, find = service.ExisByButtonIdFromMessage(req.GoalId)
 	if find {
 		response.BadRequest(gin.H{"error": "メッセージ登録済みです。"}, c)
 		return
 	}
 
 	// 新規メッセージ登録
-	err := service.RegistrationMessage(req.ButtonId, req.Condition, req.Message)
+	err := service.RegistrationMessage(req.GoalId, req.Condition, req.Message)
 	if err != nil {
 		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
@@ -54,7 +54,7 @@ func (m *messageimpl) GetMessage(c *gin.Context) {
 		return
 	}
 
-	buttonId := c.Param("button_id")
+	buttonId := c.Param("device_id")
 
 	message, find := service.ExisByButtonIdFromMessage(buttonId)
 	if !find {
@@ -72,7 +72,7 @@ func (m *messageimpl) DeleteMessage(c *gin.Context) {
 		return
 	}
 
-	buttonId := c.Param("button_id")
+	buttonId := c.Param("device_id")
 
 	_, find := service.ExisByButtonIdFromMessage(buttonId)
 	if !find {

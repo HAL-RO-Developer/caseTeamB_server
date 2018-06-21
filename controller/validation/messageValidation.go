@@ -6,7 +6,7 @@ import (
 )
 
 type Message struct {
-	ButtonId  string `json:"button_id"`
+	GoalId    string `json:"goal_id"`
 	Condition int    `json:"condition"`
 	Message   string `json:"message"`
 }
@@ -14,7 +14,7 @@ type Message struct {
 func MessageValidation(c *gin.Context) (Message, bool) {
 	var req Message
 	err := c.BindJSON(&req)
-	if err != nil {
+	if err != nil || req.GoalId == "" || req.Message == "" {
 		response.BadRequest(gin.H{"error": "入力されていないデータがあります。"}, c)
 		return req, false
 	}

@@ -42,3 +42,32 @@ func DeleteUser(name string) bool {
 	db.Delete(&user)
 	return true
 }
+
+// こどもID検索
+func ExisByChildId(name string, childId int) bool {
+	var child []model.UserChild
+	db.Where("name = ? and child_id = ?", name, childId).Find(&child)
+	return len(child) != 0
+}
+
+// 最初に見つけたこどもID情報削除
+func DeleteChildFirst(name string) bool {
+	var child model.UserChild
+	err := db.Where("name = ?", name).First(&child).Error
+	if err != nil {
+		return false
+	}
+	db.Delete(child)
+	return true
+}
+
+// こどもID情報削除
+func DeleteChild(name string, childId int) bool {
+	var child model.UserChild
+	err := db.Where("name = ? and child_id = ?", name, childId).First(&child).Error
+	if err != nil {
+		return false
+	}
+	db.Delete(&child)
+	return true
+}

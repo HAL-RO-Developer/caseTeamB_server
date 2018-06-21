@@ -5,9 +5,9 @@ import (
 )
 
 // 目標達成数変更
-func ApprovalGoal(button_id string, approval int) bool {
-	goal := model.Goal{}
-	err := db.Where("button_id = ?", button_id).First(&goal).Error
+func ApprovalGoal(goal_id string, approval int) bool {
+	goal := model.GoalDate{}
+	err := db.Where("goal_id = ?", goal_id).First(&goal).Error
 	if err != nil {
 		return false
 	}

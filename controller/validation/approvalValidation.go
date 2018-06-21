@@ -13,7 +13,7 @@ type Approval struct {
 func ApprovalCheck(c *gin.Context) (Approval, bool) {
 	var req Approval
 	err := c.BindJSON(&req)
-	if err != nil {
+	if err != nil || req.ButtonId == "" {
 		response.BadRequest(gin.H{"error": "ボタンIDが入力されていません。"}, c)
 		return req, false
 	}

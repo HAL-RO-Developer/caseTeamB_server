@@ -25,7 +25,7 @@ func (A *approvalimpl) ApprovalGoal(c *gin.Context) {
 		return
 	}
 
-	_, find := service.ExisByButtonIdFromGoal(req.ButtonId)
+	_, find := service.ExisByDeviceIdFromGoal(req.ButtonId)
 	if !find {
 		response.BadRequest(gin.H{"error": "そのボタンは見つかりません。"}, c)
 		return

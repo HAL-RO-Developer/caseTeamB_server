@@ -6,9 +6,9 @@ import (
 
 // 目標の新規登録
 func RegistrationGoal(goal string, deviceId string) error {
-	registration := model.Goal{
-		ButtonId: deviceId,
-		Contents: goal,
+	registration := model.GoalDate{
+		DeviceId: deviceId,
+		Content:  goal,
 		Run:      0,
 	}
 	err := db.Create(&registration).Error
@@ -16,16 +16,16 @@ func RegistrationGoal(goal string, deviceId string) error {
 }
 
 // 目標取得
-func ExisByButtonIdFromGoal(buttonId string) ([]model.Goal, bool) {
-	var goals []model.Goal
-	db.Where("button_id = ?", buttonId).Find(&goals)
+func ExisByDeviceIdFromGoal(deviceId string) ([]model.GoalDate, bool) {
+	var goals []model.GoalDate
+	db.Where("device_id = ?", deviceId).Find(&goals)
 	return goals, len(goals) != 0
 }
 
 // 目標削除
-func DeleteGoal(buttonId string) bool {
-	var goals model.Goal
-	err := db.Where("button_id = ?", buttonId).First(&goals).Error
+func DeleteGoal(deviceId string) bool {
+	var goals model.Device
+	err := db.Where("device_id = ?", deviceId).First(&goals).Error
 	if err != nil {
 		return false
 	}

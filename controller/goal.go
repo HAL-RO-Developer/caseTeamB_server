@@ -24,13 +24,18 @@ func (g *goalimpl) CreateGoal(c *gin.Context) {
 	if !ok {
 		return
 	}
+	// ゴールID検索
+	if !service.ExisByDeviceId(req.DeviceId) {
+		response.BadRequest(gin.H{"error": "そのボタンIDは存在しません。"}, c)
+		return
+	}
 	// 目標の重複チェック
-	_, find := service.ExisByButtonIdFromGoal(req.ButtonId)
+	_, find := service.ExisByDeviceIdFromGoal(req.DeviceId)
 	if find {
 		response.BadRequest(gin.H{"error": "そのボタンは目標登録済みです。"}, c)
 		return
 	}
-	err := service.RegistrationGoal(req.Contents, req.ButtonId)
+	err := service.RegistrationGoal(req.Content, req.DeviceId)
 	if err != nil {
 		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
@@ -46,14 +51,14 @@ func (g *goalimpl) GetGoal(c *gin.Context) {
 		return
 	}
 
-	buttonId := c.Param("button_id")
+	deviceId := c.Param("device_id")
 	// ボタンIDを検索
-	goal, find := service.ExisByButtonIdFromGoal(buttonId)
+	goal, find := service.ExisByDeviceIdFromGoal(deviceId)
 	if !find {
 		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
 		return
 	}
-	response.Json(gin.H{"archive": goal[0].Run, "goal": goal[0].Contents}, c)
+	response.Json(gin.H{"created_at": goal[0].CreatedAt, "updated_at": goal[0].UpdatedAt, "run": goal[0].Run, "goal": goal[0].Content}, c)
 }
 
 // 目標削除
@@ -64,9 +69,9 @@ func (g *goalimpl) DeleteGoal(c *gin.Context) {
 		return
 	}
 
-	buttonId := c.Param("button_id")
+	buttonId := c.Param("device_id")
 	// ボタンIDを検索
-	_, find := service.ExisByButtonIdFromGoal(buttonId)
+	_, find := service.ExisByDeviceIdFromGoal(buttonId)
 	if !find {
 		response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
 		return
