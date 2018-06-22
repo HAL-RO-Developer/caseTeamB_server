@@ -32,8 +32,8 @@ func (A *approvalimpl) ApprovalGoal(c *gin.Context) {
 	}
 
 	// 目標の達成承認
-	fail := service.ApprovalGoal(req.ButtonId, req.Approval)
-	if !fail {
+	success := service.ApprovalGoal(req.ButtonId, req.Approval)
+	if !success {
 		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
 	}

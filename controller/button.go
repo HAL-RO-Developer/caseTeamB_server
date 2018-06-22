@@ -22,8 +22,8 @@ func (b *buttonimpl) DeviceIncrement(c *gin.Context) {
 	if !service.ExisByDeviceId(req.DeviceId) {
 		response.BadRequest(gin.H{"error": "goal_idが見つかりません。"}, c)
 	} else {
-		err := service.IncrementButton(req.DeviceId)
-		if err != nil {
+		success := service.ApprovalGoal(req.DeviceId, 1)
+		if !success {
 			response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 			return
 		}

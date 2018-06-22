@@ -1,10 +1,13 @@
 package service
 
 import (
+	"sync"
+
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
 
 var db = model.GetDBConn()
+var approvalM = new(sync.Mutex)
 
 // macAddr登録
 func RegistrationButton(pin string, mac string) (string, error) {
@@ -19,16 +22,23 @@ func RegistrationButton(pin string, mac string) (string, error) {
 	return button.DeviceId, err
 }
 
-// プッシュ回数追加
+// 目標達成数変更
 // Todo BOCCOAPI追記
-func IncrementButton(device_id string) error {
+func ApprovalGoal(device_id string, approval int) bool {
+	approvalM.Lock()
 	goal := model.GoalDate{}
 	err := db.Where("device_id = ?", device_id).First(&goal).Error
 	if err != nil {
-		return err
+		approvalM.Unlock()
+		return false
 	}
 
-	goal.Run++
+	goal.Run += approval
+	if goal.Run < 0 {
+		approvalM.Unlock()
+		return false
+	}
 	err = db.Model(&goal).Update(&goal).Update("run", goal.Run).Error
-	return err
+	approvalM.Unlock()
+	return true
 }
