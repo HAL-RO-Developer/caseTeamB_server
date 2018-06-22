@@ -1,6 +1,6 @@
 FORMAT: 1A
 
-# BOCCO x 目標ボタンAPI一覧
+# ケーススタディ HAL大阪　API一覧
 
 # Group A/B共通
 ## ユーザー登録 [/signup]
@@ -232,7 +232,93 @@ FORMAT: 1A
 
         + error: pinが見つかりません。
 
-# Group BOCCOx目標ボタン用API
+# Group BOCCO x 学習 API
+
+## ユーザー削除 [/work/user]
+### ユーザー削除[DELETE]
+登録されているユーザー情報を削除します。
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: ユーザー情報を削除しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+
+## ICリーダー [/work/reader]
+### 回答データを送信[POST]
+デバイス情報と読み取ったタグの情報を送信。
+
++ Request(application/json)
+
+    + Attributes
+        + device_id: sample
+        + data
+            + book_id(number): 1
+            + q_no(number): 1
+            + solution(number): 1
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 送信しました。
+
++ Response 418 (application/json)
+
+    + Attribute
+
+        + error: データベースエラー
+
+## 記録を取得 [/work/record/{device_id}]
+### 回答データを送信[GET]
+指定されたリーダーの記録情報を取得
+
++ Parameters
+    + device_id: sample
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + data (array)
+            + (object)
+                + date: `2018-06-21T13:35:08+09:00`
+                + book_id: 1 (number)
+                + q_no: 1 (number)
+                + answer: 1 (number)
+                + correct: 2 (number)
+
+            + (object)
+                + date: `2018-06-22T13:35:08+09:00`
+                + book_id: 2 (number)
+                + q_no: 3 (number)
+                + answer: 3 (number)
+                + correct: 1 (number)
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: 回答情報が見つかりませんでした。
+
+# Group BOCCO x 目標ボタン API
 
 ## ユーザー削除 [/goal/user]
 ### ユーザー削除[DELETE]

@@ -9,8 +9,8 @@ import (
 
 // デバイスID新規登録
 func CreateDevice(name string, childId int) (string, bool) {
-	if ExisDeviceBynameChild(name, childId) == true || ExisByChildId(name, childId) == false {
-		return "登録済みの子どもIDもしくは子どもIDが存在しません。", false
+	if ExisByChildId(name, childId) == false {
+		return "子どもIDが存在しません。", false
 	}
 
 	goalID := createId()
@@ -88,13 +88,6 @@ func GetDeviceId(name string) ([]model.Device, bool) {
 	var devices []model.Device
 	db.Where("name = ?", name).Find(&devices)
 	return devices, len(devices) != 0
-}
-
-// データベースからGoalテーブル検索(ユーザー名&こどもIDから)
-func ExisDeviceBynameChild(name string, childId int) bool {
-	var devices []model.Device
-	db.Where("name = ? and child_id = ?", name, childId).Find(&devices)
-	return len(devices) != 0
 }
 
 // 指定されたボタンIDの削除
