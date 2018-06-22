@@ -6,14 +6,14 @@ import (
 )
 
 type Tag struct {
-	DeviceId string `json:"device_id"` // 読み取り機のmacアドレス
+	DeviceId string `json:"device_id"` // 読み取り機のdeviceID
 	Data     []Info `json:"data"`
 }
 
 type Info struct {
 	BookId     int `json:"book_id"`
 	QuestionNo int `json:"q_no"`
-	Solution   int `json:"solution"`
+	UserAns    int `json:"user_answer"`
 }
 
 func ReaderValidation(c *gin.Context) (Tag, bool) {

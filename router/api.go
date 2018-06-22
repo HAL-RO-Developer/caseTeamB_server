@@ -25,7 +25,7 @@ func userRouter(user *gin.RouterGroup) {
 
 func workRouter(work *gin.RouterGroup) {
 	// ユーザー情報削除
-	work.DELETE("/user")
+	work.DELETE("/user", User.UserDeleteForWork)
 	// ICリーダー
 	work.POST("/reader", Reader.SendTag)
 	// 回答記録取得

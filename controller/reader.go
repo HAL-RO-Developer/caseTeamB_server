@@ -19,7 +19,7 @@ func (r *readerimpl) SendTag(c *gin.Context) {
 		return
 	}
 
-	if service.SendUserSolution(req.DeviceId, req.Data[0].BookId, req.Data[0].QuestionNo, req.Data[0].Solution) != nil {
+	if service.SendUserSolution(req.DeviceId, req.Data[0].BookId, req.Data[0].QuestionNo, req.Data[0].UserAns) != nil {
 		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
 	}

@@ -3,9 +3,9 @@ package service
 import "github.com/HAL-RO-Developer/caseTeamB_server/model"
 
 // 端末ごとの回答情報取得
-func ExisByRecord(readerId string) ([]model.Record, bool) {
+func ExisByRecord(deviceId string) ([]model.Record, bool) {
 	var records []model.Record
-	db.Where("reader_id = ?", readerId).Find(&records)
+	db.Where("device_id = ?", deviceId).Find(&records)
 	return records, len(records) != 0
 }
 
@@ -18,4 +18,15 @@ func ExisByCorrect(bookId int, questionNo int) int {
 		return 0
 	}
 	return question[0].Correct
+}
+
+// 回答情報の削除
+func DeleteUserAnswer(deviceId string) bool {
+	var records []model.Record
+	err := db.Where("device_id = ?", deviceId).First(&records).Error
+	if err != nil {
+		return false
+	}
+	db.Delete(records)
+	return true
 }

@@ -267,7 +267,7 @@ FORMAT: 1A
         + data
             + book_id(number): 1
             + q_no(number): 1
-            + solution(number): 1
+            + user_answer(number): 1
 
 + Response 200 (application/json)
 
@@ -282,7 +282,7 @@ FORMAT: 1A
         + error: データベースエラー
 
 ## 記録を取得 [/work/record/{device_id}]
-### 回答データを送信[GET]
+### 回答データの取得[GET]
 指定されたリーダーの記録情報を取得
 
 + Parameters
@@ -302,14 +302,14 @@ FORMAT: 1A
                 + date: `2018-06-21T13:35:08+09:00`
                 + book_id: 1 (number)
                 + q_no: 1 (number)
-                + answer: 1 (number)
+                + user_answer: 1 (number)
                 + correct: 2 (number)
 
             + (object)
                 + date: `2018-06-22T13:35:08+09:00`
                 + book_id: 2 (number)
                 + q_no: 3 (number)
-                + answer: 3 (number)
+                + user_answer: 3 (number)
                 + correct: 1 (number)
 
 + Response 400 (application/json)

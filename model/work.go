@@ -17,7 +17,7 @@ type Genre struct {
 // ドリル問題情報
 type Question struct {
 	Model
-	Mac        string `json:"mac"` // 読み取り機のmacアドレス
+	DeviceId   string `json:"device_id"` // 読み取り機のデバイスID
 	QuestionNo int    `json:"q_no"`
 	Sentence   string `json:"sentence"` // 問題文
 	Correct    int    `json:"correct"`
@@ -26,8 +26,8 @@ type Question struct {
 // 回答の記録
 type Record struct {
 	Model
-	Mac        string `json:"mac"` // 読み取り機のmacアドレス
+	DeviceId   string `json:"device_id"` // 読み取り機のデバイスID
 	BookId     int    `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
-	Answer     int    `json:"answer"` // ユーザーの回答
+	Answer     int    `json:"user_answer"` // ユーザーの回答
 }

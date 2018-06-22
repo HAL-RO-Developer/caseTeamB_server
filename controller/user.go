@@ -43,12 +43,10 @@ func (u *userimpl) UserDeleteForWork(c *gin.Context) {
 		return
 	}
 
-	goals, find := service.GetDeviceId(name)
+	works, find := service.ExisByRecord(name)
 	if find {
-		for i := 0; i < len(goals); i++ {
-			service.DeleteGoal(goals[i].DeviceId)
-			service.DeleteMessage(goals[i].DeviceId)
-			service.DeleteButtonFirst(name)
+		for i := 0; i < len(works); i++ {
+			service.DeleteUserAnswer(works[i].DeviceId)
 		}
 	}
 
