@@ -28,7 +28,7 @@ FORMAT: 1A
 
  
 ## サインイン [/signin]
-  
+
 ### サインイン [POST]
 登録されているユーザー情報を元にサインインを行います。
 
@@ -130,7 +130,7 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## デバイス [/device/{goal_id}]
+## デバイス [/device/{device_id}]
 
 ### デバイスID発行[POST]
 新規登録するデバイスIDの発行を行います。
@@ -171,12 +171,12 @@ FORMAT: 1A
 
         + List (array)
             + (object)
-                + goal_id: sample
-                + goal_status: true (boolean)
+                + device_id: sample
+                + device_status: true (boolean)
 
             + (object)
-                + goal_id: index
-                + goal_status: false (boolean)
+                + device_id: index
+                + device_status: false (boolean)
 
 + Response 400 (application/json)
 
@@ -188,7 +188,7 @@ FORMAT: 1A
 登録されているデバイスIDを削除します。
 
 + Parameters
-    + goal_id: sample
+    + device_id: sample
 
 + Request
     + Headers
@@ -220,12 +220,11 @@ FORMAT: 1A
         + pin: 0000
         + mac: abc123
 
-
 + Response 200 (application/json)
 
  + Attribute
 
-      + goal_id: sample
+      + device_id: sample
 
 + Response 400 (application/json)
 
@@ -263,7 +262,7 @@ FORMAT: 1A
 + Request (applicaition/json)
 
     + Attributes
-        + goal_id: sample
+        + device_id: sample
 
 + Response 200 (application/json)
 
@@ -279,7 +278,7 @@ FORMAT: 1A
         + error: ボタンIDが見つかりません。
 
 
-## 目標 [/goal/goal/{goal_id}]
+## 目標 [/goal/goal/{device_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
@@ -290,7 +289,7 @@ FORMAT: 1A
             Authorization: token
 
     + Attributes
-        + goal_id: sample
+        + device_id: sample
         + goal: practice
 
 + Response 200 (application/json)
@@ -311,7 +310,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + goal_id: sample
+    + device_id: sample
 
 + Request
     + Headers
@@ -340,7 +339,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + goal_id: sample
+    + device_id: sample
 
 + Request
     + Headers
@@ -362,7 +361,7 @@ FORMAT: 1A
 
 ## 目標達成承認/非承認 [/goal/approval]
 
-### 達成承認 [POST]
+### 達成数変更 [POST]
 目標実行数を変更します。
 
 + Request (application/json)
@@ -371,7 +370,7 @@ FORMAT: 1A
             Authorization: token
 
     + Attributes
-        + goal_id: sample
+        + device_id: sample
         + approval : 1 (number) - 増減値
 
 + Response 200 (application/json)
@@ -386,7 +385,7 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## メッセージ [/goal/message/{goal_id}]
+## メッセージ [/goal/message/{device_id}]
 
 ### メッセージ登録[POST]
 メッセージの新規追加を行います。
@@ -398,7 +397,7 @@ FORMAT: 1A
 
     + Attributes
 
-        + goal_id: sample
+        + device_id: sample
         + condition : 5 (number)
         + message: practice
 
@@ -419,7 +418,7 @@ FORMAT: 1A
 登録されているメッセージと承認済み実行回数を取得します。
 
 + Parameters
-    + goal_id: sample
+    + device_id: sample
 
 + Request
     + Headers
@@ -443,7 +442,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + goal_id: sample
+    + device_id: sample
 
 + Request
     + Headers
