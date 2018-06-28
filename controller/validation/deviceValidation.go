@@ -10,7 +10,7 @@ type PostDevice struct {
 	Mac string `json:"mac"`
 }
 
-func ButtonRegistrationCheck(c *gin.Context) (PostDevice, bool) {
+func DeviceRegistrationCheck(c *gin.Context) (PostDevice, bool) {
 	var req PostDevice
 	err := c.BindJSON(&req)
 	if err != nil || req.Mac == "" || req.Pin == "" {

@@ -6,15 +6,15 @@ import (
 )
 
 type Approval struct {
-	ButtonId string `json:"button_id"`
+	GoalId   string `json:"goal_id"`
 	Approval int    `json:"approval"`
 }
 
 func ApprovalCheck(c *gin.Context) (Approval, bool) {
 	var req Approval
 	err := c.BindJSON(&req)
-	if err != nil || req.ButtonId == "" {
-		response.BadRequest(gin.H{"error": "ボタンIDが入力されていません。"}, c)
+	if err != nil || req.GoalId == "" {
+		response.BadRequest(gin.H{"error": "未入力の項目があります。"}, c)
 		return req, false
 	}
 	return req, true

@@ -1,5 +1,4 @@
 FORMAT: 1A
-
 # ケーススタディ HAL大阪　API一覧
 
 # Group A/B共通
@@ -25,7 +24,6 @@ FORMAT: 1A
     + Attribute
 
         + error: 登録済みのユーザー名です。
-
  
 ## サインイン [/signin]
 
@@ -50,7 +48,29 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## 子供情報設定 [/child]
+## ユーザー削除 [/user]
+### ユーザー削除[DELETE]
+登録されているユーザー情報を削除します。
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: ユーザー情報を削除しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+
+## 子供情報設定 [/child/{child_id}]
 ### 子供情報追加[POST]
 子供の誕生日と性別、ニックネームを設定します。
 
@@ -68,7 +88,7 @@ FORMAT: 1A
 
     + Attribute
 
-        + success: 子供情報を追加しました。
+        + child_id: 1 (number)
 
 + Response 400 (application/json)
 
@@ -86,17 +106,17 @@ FORMAT: 1A
 
 + Response 200 (application/json)
 
-    + Attribute
+    + Attributes
 
-        + data (array)
+        + children (array)
             + (object)
-                + child_id: 1 (number),
+                + child_id: 1 (number)
                 + birthday: `2016-10-01T09:00:00+09:00`
                 + nickname: sample
                 + sex: 0 (number) - 0:男、1:女
 
             + (object)
-                + child_id: 2 (number),
+                + child_id: 2 (number)
                 + birthday: `2017-03-19T09:00:00+09:00`
                 + nickname: index
                 + sex: 1 (number) - 0:男、1:女
@@ -110,13 +130,13 @@ FORMAT: 1A
 ### 子供情報削除[DELETE]
 登録されている子どもIDの情報を削除します。
 
-+ Request(application/json)
++ Parameters
+    + child_id: 1
+
++ Request
     + Headers
 
             Authorization: token
-
-    + Attributes
-        + child_id: 1 (number)
 
 + Response 200 (application/json)
 
@@ -140,9 +160,8 @@ FORMAT: 1A
 
             Authorization: token
 
-    + Attributes
-        + child_id(number): 1
-
+    + Attribute
+        + child_id: 1 (number)
 
 + Response 200 (application/json)
 
@@ -167,16 +186,16 @@ FORMAT: 1A
 
 + Response 200 (application/json)
 
-    + Attribute
+    + Attributes
 
-        + List (array)
+        + devices (array)
             + (object)
                 + device_id: sample
-                + device_status: true (boolean)
+                + device_alive: true (boolean)
 
             + (object)
                 + device_id: index
-                + device_status: false (boolean)
+                + device_alive: false (boolean)
 
 + Response 400 (application/json)
 
@@ -195,7 +214,6 @@ FORMAT: 1A
 
             Authorization: token
 
-
 + Response 200 (application/json)
 
     + Attribute
@@ -208,35 +226,35 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## デバイス紐付け [/registration]
+## BOCCOAPI [/bocco]
 
-### ボタン登録[POST]
-ボタンIDと各ボタンデバイスとの紐付けを行います。
+### BOCCOAPI設定[POST]
+BOCCOAPIに登録したメールアドレスと、パスワードの入力
 
++ Request
+    + Headers
 
-+ Request (applicaition/json)
- 
+            Authorization: token
+
     + Attribute
-        + pin: 0000
-        + mac: abc123
+        + email: sample@gmail.com
+        + key : sample - APIkey
+        + password: abc123
 
 + Response 200 (application/json)
 
- + Attribute
+    + Attribute
 
-      + device_id: sample
+        + success: メールアドレスとパスワードを登録しました。
 
 + Response 400 (application/json)
 
     + Attribute
 
-        + error: pinが見つかりません。
+        + error: ログインエラー
 
-# Group BOCCO x 学習 API
-
-## ユーザー削除 [/work/user]
-### ユーザー削除[DELETE]
-登録されているユーザー情報を削除します。
+### BOCCOAPI設定の取得[GET]
+BOCCOAPIに登録したメールアドレスの取得
 
 + Request
     + Headers
@@ -247,7 +265,27 @@ FORMAT: 1A
 
     + Attribute
 
-        + success: ユーザー情報を削除しました。
+        + email: sample@gmail.com
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### BOCCOAPI削除[DELETE]
+BOCCOAPIに登録したメールアドレスと、パスワードの削除
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: メールアドレスとパスワードを削除しました。
 
 + Response 400 (application/json)
 
@@ -256,30 +294,7 @@ FORMAT: 1A
         + error: ログインエラー
 
 
-## ICリーダー [/work/reader]
-### 回答データを送信[POST]
-デバイス情報と読み取ったタグの情報を送信。
-
-+ Request(application/json)
-
-    + Attributes
-        + device_id: sample
-        + data
-            + book_id(number): 1
-            + q_no(number): 1
-            + user_answer(number): 1
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: 送信しました。
-
-+ Response 418 (application/json)
-
-    + Attribute
-
-        + error: データベースエラー
+# Group BOCCO x 学習 API
 
 ## 記録を取得 [/work/record/{device_id}]
 ### 回答データの取得[GET]
@@ -295,22 +310,23 @@ FORMAT: 1A
 
 + Response 200 (application/json)
 
-    + Attribute
-
-        + data (array)
+    + Attributes
+        + record (array)
             + (object)
-                + date: `2018-06-21T13:35:08+09:00`
-                + book_id: 1 (number)
-                + q_no: 1 (number)
-                + user_answer: 1 (number)
-                + correct: 2 (number)
+                + date: `2018-06-21T13:35:08+09:00` - 回答日時
+                + genre_name: 算数 - 問題のジャンル名
+                + sentence: 1 + 1は? - 問題文
+                + user_answer: 2 - ユーザーの回答
+                + correct: 2 - 問題の正解
+                + result: true (boolean) - 正解:true,不正解:false
 
             + (object)
                 + date: `2018-06-22T13:35:08+09:00`
-                + book_id: 2 (number)
-                + q_no: 3 (number)
-                + user_answer: 3 (number)
-                + correct: 1 (number)
+                + genre_name: 社会
+                + sentence: 兵庫県の県庁所在地は？
+                + user_answer: 兵庫市
+                + correct: 神戸市
+                + result: false (boolean)
 
 + Response 400 (application/json)
 
@@ -320,51 +336,7 @@ FORMAT: 1A
 
 # Group BOCCO x 目標ボタン API
 
-## ユーザー削除 [/goal/user]
-### ユーザー削除[DELETE]
-登録されているユーザー情報を削除します。
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: ユーザー情報を削除しました。
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-## プッシュ回数増加 [/goal/push]
-### ボタンプッシュ[POST]
-目標ボタンが押された回数を記録します。
-
-+ Request (applicaition/json)
-
-    + Attributes
-        + device_id: sample
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: プッシュ回数を追加しました。
-
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ボタンIDが見つかりません。
-
-
-## 目標 [/goal/goal/{device_id}]
+## 目標 [/goal/goal/{child_id}/{goal_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
@@ -374,15 +346,17 @@ FORMAT: 1A
 
             Authorization: token
 
-    + Attributes
-        + device_id: sample
-        + goal: practice
+    + Attribute
+        + child_id: 1 (number)
+        + content: practice
+        + criteria: 20 (number) - 達成目標数
+        + deadline : `2018-07-01` - 達成期日(なければ空)
 
 + Response 200 (application/json)
 
     + Attribute
 
-        + success: 目標を追加しました。
+        + goal_id: sample
 
 + Response 400 (application/json)
 
@@ -390,13 +364,32 @@ FORMAT: 1A
 
         + error: ログインエラー
 
+### ボタン登録[PUT]
+使用するdevice_idを登録します
+
++ Request (application/json)
+    + Headers
+
+            Authorization: token
+
+    + Attribute
+        + goal_id: sample
+        + device_id: sample
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 登録しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
 
 ### 目標取得[GET]
 登録されている目標と実行回数を取得します。
-
-
-+ Parameters
-    + device_id: sample
 
 + Request
     + Headers
@@ -405,12 +398,30 @@ FORMAT: 1A
 
 + Response 200 (application/json)
 
-    + Attribute
-
-        + created_at: `2018-06-21T13:35:08+09:00`
-        + run : 5 (number)
-        + goal: practice
-        + updated_at: `2018-06-21T13:37:21+09:00`,
+    + Attributes
+        + goals(array)
+            + (object)
+                + created_at: `2018-06-21T13:35:08+09:00`
+                + child_id: 1 (number)
+                + goal_id : test - 目標ID
+                + device_id : sample
+                + run : 5 (number) - 目標実行数
+                + content: practice - 目標名称
+                + criteria: 20 (number) - 達成目標数
+                + deadline : `2018-07-11T13:35:08+09:00` - 達成期日(なければ空)
+                + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
+                + updated_at: `2018-06-21T13:37:21+09:00`,
+            + (object)
+                + created_at: `2018-06-21T13:35:08+09:00`
+                + child_id: 2 (number)
+                + goal_id : sample
+                + device_id : index
+                + run : 5 (number)
+                + content: index
+                + criteria: 30 (number)
+                + deadline : なし
+                + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
+                + updated_at: `2018-06-21T13:37:21+09:00`,
 
 
 + Response 400 (application/json)
@@ -423,10 +434,8 @@ FORMAT: 1A
 ### 目標削除[DELETE]
 登録されている目標を削除します。
 
-
 + Parameters
-    + device_id: sample
-
+    + goal_id : sample
 + Request
     + Headers
 
@@ -447,7 +456,7 @@ FORMAT: 1A
 
 ## 目標達成承認/非承認 [/goal/approval]
 
-### 達成数変更 [POST]
+### 達成数変更 [PUT]
 目標実行数を変更します。
 
 + Request (application/json)
@@ -455,8 +464,8 @@ FORMAT: 1A
 
             Authorization: token
 
-    + Attributes
-        + device_id: sample
+    + Attribute
+        + goal_id: sample
         + approval : 1 (number) - 増減値
 
 + Response 200 (application/json)
@@ -471,27 +480,27 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-## メッセージ [/goal/message/{device_id}]
+## メッセージ [/goal/message]
 
-### メッセージ登録[POST]
-メッセージの新規追加を行います。
+### メッセージ編集[PUT]
+メッセージの編集を行います。
 
 + Request (application/json)
     + Headers
 
             Authorization: token
 
-    + Attributes
+    + Attribute
 
-        + device_id: sample
-        + condition : 5 (number)
+        + goal_id: sample
+        + condition : 5 (number) - メッセージ出力条件
         + message: practice
 
 + Response 200 (application/json)
 
     + Attribute
 
-        + success: メッセージを登録しました。
+        + success: メッセージを編集しました。
 
 + Response 400 (application/json)
 
@@ -501,20 +510,29 @@ FORMAT: 1A
 
 
 ### メッセージ取得[GET]
-登録されているメッセージと承認済み実行回数を取得します。
-
-+ Parameters
-    + device_id: sample
+登録されているメッセージとメッセージ出力条件を取得します。
 
 + Request
     + Headers
 
             Authorization: token
+
 + Response 200 (application/json)
 
-    + Attribute
+    + Attributes
 
-       + practice: 5 (number)
+        + messages(array)
+            + (object)
+                + goal_id: sample
+                + content: practice
+                + condtion: 5 (number)
+                + message: practice
+
+            + (object)
+                + goal_id: index
+                + content: test
+                + condtion: 5 (number)
+                + message: sample
 
 + Response 400 (application/json)
 
@@ -522,27 +540,72 @@ FORMAT: 1A
 
         + error: ログインエラー
 
-     
-### メッセージ削除[DELETE]
-登録されているメッセージを削除します。
+# Group ICリーダー&ボタン側API
+
+## デバイス [/thing/registration]
+
+### デバイス登録[POST]
+デバイスIDと各デバイスとの紐付けを行います。
 
 
-+ Parameters
-    + device_id: sample
++ Request (applicaition/json)
+ 
+    + Attribute
+        + pin: 0000
+        + mac: abc123
 
-+ Request
-    + Headers
-
-            Authorization: token
 + Response 200 (application/json)
 
-    + Attribute
+ + Attribute
 
-        + success: 目標を削除しました。
-
+      + device_id: sample
 
 + Response 400 (application/json)
 
     + Attribute
 
-        + error: ログインエラー
+        + error: pinが見つかりません。
+
+## ICリーダー [/thing/reader]
+### 回答データを送信[POST]
+デバイス情報と読み取ったタグの情報を送信。
+
++ Request(application/json)
+
+    + Attribute
+        + device_id: sample
+        + uuid: 1234 (number)
+        
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: 送信しました。
+
++ Response 418 (application/json)
+
+    + Attribute
+
+        + error: データベースエラー
+
+## プッシュ回数増加 [/thing/button]
+
+### ボタンプッシュ[PUT]
+目標ボタンが押された回数を記録します。
+
++ Request (applicaition/json)
+
+    + Attribute
+        + device_id: sample
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + achievement: 60 (number) - 目標の達成率
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: 目標IDが見つかりません。

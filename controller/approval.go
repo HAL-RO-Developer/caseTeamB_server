@@ -25,14 +25,14 @@ func (A *approvalimpl) ApprovalGoal(c *gin.Context) {
 		return
 	}
 
-	_, find := service.ExisByDeviceIdFromGoal(req.ButtonId)
+	_, find := service.GetOneGoal(req.GoalId)
 	if !find {
-		response.BadRequest(gin.H{"error": "そのボタンは見つかりません。"}, c)
+		response.BadRequest(gin.H{"error": "その目標は見つかりません。"}, c)
 		return
 	}
 
 	// 目標の達成承認
-	success := service.ApprovalGoal(req.ButtonId, req.Approval)
+	success := service.ApprovalGoal(req.GoalId, req.Approval)
 	if !success {
 		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return

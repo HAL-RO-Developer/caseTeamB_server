@@ -17,17 +17,19 @@ type Genre struct {
 // ドリル問題情報
 type Question struct {
 	Model
-	DeviceId   string `json:"device_id"` // 読み取り機のデバイスID
+	BookId     string `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
 	Sentence   string `json:"sentence"` // 問題文
-	Correct    int    `json:"correct"`
+	Correct    int    `json:"correct"`  // 答え
 }
 
 // 回答の記録
 type Record struct {
 	Model
-	DeviceId   string `json:"device_id"` // 読み取り機のデバイスID
+	Name       string `json:"name"`
+	ChildId    int    `json:"child_id"`
 	BookId     int    `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
 	Answer     int    `json:"user_answer"` // ユーザーの回答
+	Challenge  int    `json:"challege"`    // チャレンジ実行タイプ
 }

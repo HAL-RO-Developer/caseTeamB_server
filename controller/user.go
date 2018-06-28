@@ -3,6 +3,8 @@ package controller
 import (
 	"time"
 
+	"strconv"
+
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
@@ -46,7 +48,7 @@ func (u *userimpl) UserDeleteForWork(c *gin.Context) {
 	works, find := service.ExisByRecord(name)
 	if find {
 		for i := 0; i < len(works); i++ {
-			service.DeleteUserAnswer(works[i].DeviceId)
+			//service.DeleteUserAnswer(works[i].DeviceId)
 		}
 	}
 
@@ -69,11 +71,17 @@ func (u *userimpl) UserDeleteForGoal(c *gin.Context) {
 	if find {
 		for i := 0; i < len(goals); i++ {
 			service.DeleteGoal(goals[i].DeviceId)
-			service.DeleteMessage(goals[i].DeviceId)
 			service.DeleteButtonFirst(name)
 			service.DeleteChildFirst(name)
 		}
 	}
+
+	_, find = service.ExisByBoccoAPI(name)
+	if !find {
+		response.BadRequest(gin.H{"error": "BOCCOAPI設定が見つかりませんでした。"}, c)
+		return
+	}
+	service.DeleteBoccoInfo(name)
 
 	if service.DeleteUser(name) {
 		response.Json(gin.H{"success": "ユーザー情報を削除しました。"}, c)
@@ -103,7 +111,7 @@ func (u *userimpl) GetChildren(c *gin.Context) {
 			child.Sex = buf[i].Sex
 			children = append(children, child)
 		}
-		response.Json(gin.H{"data": children}, c)
+		response.Json(gin.H{"children": children}, c)
 		return
 	}
 	response.BadRequest(gin.H{"error": "子供情報が見つかりませんでした。"}, c)
@@ -122,27 +130,29 @@ func (u *userimpl) Child(c *gin.Context) {
 		return
 	}
 
-	success := service.AddChild(name, req)
+	childId, success := service.AddChild(name, req)
 	if !success {
 		response.BadRequest(gin.H{"error": "登録失敗"}, c)
 		return
 	}
-	response.Json(gin.H{"success": "子供の情報を追加しました。"}, c)
+	response.Json(gin.H{"child_id": childId}, c)
 }
 
 // 指定された子ども情報の削除
 func (u *userimpl) DeleteChild(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.BadRequest(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
-	req, ok := validation.ChildrenInfoValidation(c)
-	if !ok {
+	childId, err := strconv.Atoi(c.Param("child_id"))
+	if err != nil {
+		response.BadRequest(gin.H{"error": "リクエストが不正です。"}, c)
 		return
 	}
-	success := service.DeleteChild(name, req.ChildId)
+
+	success := service.DeleteChild(name, childId)
 	if !success {
 		response.BadRequest(gin.H{"error": "子どもIDが見つかりませんでした。"}, c)
 		return

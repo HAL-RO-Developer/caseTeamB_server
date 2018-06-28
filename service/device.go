@@ -13,13 +13,13 @@ func CreateDevice(name string, childId int) (string, bool) {
 		return "子どもIDが存在しません。", false
 	}
 
-	goalID := createId()
+	deviceID := createId()
 	pin := createPin()
 
 	device := model.Device{
 		Name:     name,
 		ChildId:  childId,
-		DeviceId: goalID,
+		DeviceId: deviceID,
 		Pin:      pin,
 	}
 	err := db.Create(&device).Error
@@ -34,7 +34,8 @@ func createId() string {
 	var deviceId string
 	for {
 		deviceId = createUuid(12, []rune("ABCDEFGHRJKLNMOPQRSTUPWXYZabcdefghijklmnopqrstuvwxyz0123456789"))
-		if !ExisByDeviceId(deviceId) {
+		_, find := ExisByDeviceId(deviceId)
+		if !find {
 			break
 		}
 	}
@@ -63,11 +64,11 @@ func createPin() string {
 	return pin
 }
 
-// データベースからゴールID検索
-func ExisByDeviceId(deviceId string) bool {
+// データベースからデバイス情報取得
+func ExisByDeviceId(deviceId string) ([]model.Device, bool) {
 	var devices []model.Device
 	db.Where("device_id = ?", deviceId).Find(&devices)
-	return len(devices) != 0
+	return devices, len(devices) != 0
 }
 
 // データベースからPin検索

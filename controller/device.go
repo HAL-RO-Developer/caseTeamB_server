@@ -14,6 +14,11 @@ type deviceimpl struct {
 	ChildId  int    `json:"child_id"`
 }
 
+type deviceInfo struct {
+	DeviceId string `json:"device_id"`
+	Alive    bool   `json:"device_alive"`
+}
+
 // デバイスID発行
 func (d *deviceimpl) CreateNewDevice(c *gin.Context) {
 	name, ok := authorizationCheck(c)
@@ -36,7 +41,8 @@ func (d *deviceimpl) CreateNewDevice(c *gin.Context) {
 
 // デバイス一覧取得
 func (d *deviceimpl) ListDevice(c *gin.Context) {
-	var deviceId []string
+	var userDevices []deviceInfo
+	var device deviceInfo
 	name, ok := authorizationCheck(c)
 	if !ok {
 		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
@@ -46,9 +52,14 @@ func (d *deviceimpl) ListDevice(c *gin.Context) {
 	devices, find := service.GetDeviceId(name)
 	if find {
 		for i := 0; i < len(devices); i++ {
-			deviceId = append(deviceId, devices[i].DeviceId)
+			device.DeviceId = devices[i].DeviceId
+			device.Alive = false
+			if devices[i].Mac != "" {
+				device.Alive = true
+			}
+			userDevices = append(userDevices, device)
 		}
-		response.Json(gin.H{"device_id": deviceId}, c)
+		response.Json(gin.H{"devices": userDevices}, c)
 		return
 	}
 	response.BadRequest(gin.H{"error": "デバイスが登録されていません。"}, c)
@@ -63,7 +74,7 @@ func (d *deviceimpl) DeleteDevice(c *gin.Context) {
 		return
 	}
 
-	deviceId := c.PostForm("device_id")
+	deviceId := c.Param("device_id")
 
 	if service.DeleteButtonId(name, deviceId) {
 		response.Json(gin.H{"success": "デバイスIDを削除しました。"}, c)
@@ -74,7 +85,7 @@ func (d *deviceimpl) DeleteDevice(c *gin.Context) {
 
 // デバイスとIDの紐付け
 func (d *deviceimpl) DeviceRegistration(c *gin.Context) {
-	req, ok := validation.ButtonRegistrationCheck(c)
+	req, ok := validation.DeviceRegistrationCheck(c)
 	if !ok {
 		return
 	}
@@ -82,7 +93,7 @@ func (d *deviceimpl) DeviceRegistration(c *gin.Context) {
 		response.BadRequest(gin.H{"error": "pinが見つかりません。"}, c)
 		return
 	}
-	if service.ExisByMac(req.Mac) {
+	if !service.ExisByMac(req.Mac) {
 		response.BadRequest(gin.H{"error": "その端末は登録済みです。"}, c)
 		return
 	} else {

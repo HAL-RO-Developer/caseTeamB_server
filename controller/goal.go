@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
@@ -10,55 +12,105 @@ import (
 var Goal = goalimpl{}
 
 type goalimpl struct {
+	Created  time.Time  `json:"created_at"`
+	ChildId  int        `json:"child_id"`
+	GoalId   string     `json:"goal_id"`
+	DeviceId string     `json:"device_id"`
+	Run      int        `json:"run"`
+	Content  string     `json:"content"`
+	Criteria int        `json:"criteria"`
+	Deadline *time.Time `json:"deadline"`
+	Status   int        `json:"status"`
+	Updated  time.Time  `json:"updated_at"`
 }
 
 // 目標の新規追加
 func (g *goalimpl) CreateGoal(c *gin.Context) {
-	_, ok := authorizationCheck(c)
+	name, ok := authorizationCheck(c)
 	if !ok {
 		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
-	req, ok := validation.GoalRegistrationCheck(c)
+	req, ok := validation.GoalRegistrationValidation(c)
 	if !ok {
 		return
 	}
-	// ゴールID検索
-	if !service.ExisByDeviceId(req.DeviceId) {
-		response.BadRequest(gin.H{"error": "そのボタンIDは存在しません。"}, c)
-		return
-	}
-	// 目標の重複チェック
-	_, find := service.ExisByDeviceIdFromGoal(req.DeviceId)
-	if find {
-		response.BadRequest(gin.H{"error": "そのボタンは目標登録済みです。"}, c)
-		return
-	}
-	err := service.RegistrationGoal(req.Content, req.DeviceId)
+
+	goalId, err := service.RegistrationGoal(name, req)
 	if err != nil {
 		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
 		return
 	}
-	response.Json(gin.H{"success": "目標を追加しました。"}, c)
+	response.Json(gin.H{"goal_id": goalId}, c)
 }
 
-// 目標取得
-func (g *goalimpl) GetGoal(c *gin.Context) {
-	_, ok := authorizationCheck(c)
+// 目標更新
+func (g *goalimpl) UpdateGoal(c *gin.Context) {
+	name, ok := authorizationCheck(c)
 	if !ok {
 		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
-	deviceId := c.Param("device_id")
+	req, ok := validation.GoalUpdateValidation(c)
+	if !ok {
+		return
+	}
+
+	// デバイスIDを登録
+	err := service.UpdateGoal(name, req)
+	if err != nil {
+		response.BadRequest(gin.H{"error": "デバイスIDを登録できませんでした。"}, c)
+		return
+	}
+	response.Json(gin.H{"success": "登録しました"}, c)
+}
+
+// 目標取得
+func (g *goalimpl) GetGoal(c *gin.Context) {
+	var goals []goalimpl
+	var goal goalimpl
+	name, ok := authorizationCheck(c)
+	if !ok {
+		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		return
+	}
+
 	// ボタンIDを検索
-	goal, find := service.ExisByDeviceIdFromGoal(deviceId)
+	data, find := service.GetGoal(name)
 	if !find {
 		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
 		return
 	}
-	response.Json(gin.H{"created_at": goal[0].CreatedAt, "updated_at": goal[0].UpdatedAt, "run": goal[0].Run, "goal": goal[0].Content}, c)
+
+	if find {
+		for i := 0; i < len(data); i++ {
+			status := 0
+			if data[i].Run < data[i].Criteria {
+				status = 1
+			} else if data[i].Run >= data[i].Criteria && data[i].CreatedAt.Unix() > data[i].Deadline.Unix() {
+				status = 3
+			} else {
+				status = 2
+			}
+
+			goal.Created = data[i].CreatedAt
+			goal.ChildId = data[i].ChildId
+			goal.GoalId = data[i].GoalId
+			goal.DeviceId = data[i].DeviceId
+			goal.Run = data[i].Run
+			goal.Content = data[i].Content
+			goal.Criteria = data[i].Criteria
+			goal.Deadline = data[i].Deadline
+			goal.Status = status
+			goal.Updated = data[i].UpdatedAt
+			goals = append(goals, goal)
+		}
+		response.Json(gin.H{"goals": goals}, c)
+		return
+	}
+	response.BadRequest(gin.H{"error": "目標が見つかりませんでした。"}, c)
 }
 
 // 目標削除
@@ -69,18 +121,12 @@ func (g *goalimpl) DeleteGoal(c *gin.Context) {
 		return
 	}
 
-	buttonId := c.Param("device_id")
-	// ボタンIDを検索
-	_, find := service.ExisByDeviceIdFromGoal(buttonId)
-	if !find {
-		response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
-		return
-	}
+	goalId := c.Param("goal_id")
 
 	// 目標の削除
-	if service.DeleteGoal(buttonId) {
+	if service.DeleteGoal(goalId) {
 		response.Json(gin.H{"success": "目標を削除しました。"}, c)
 		return
 	}
-	response.BadRequest(gin.H{"error": "データベースエラー"}, c)
+	response.BadRequest(gin.H{"error": "目標が見つかりません。"}, c)
 }

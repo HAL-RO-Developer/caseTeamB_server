@@ -7,49 +7,50 @@ import (
 )
 
 func userRouter(user *gin.RouterGroup) {
-	// ユーザー登録、サインアップ
+	// ユーザー登録、サインアップ、削除
 	user.POST("/signup", User.Create)
 	user.POST("/signin", middleware.Login)
+	user.DELETE("user", User.UserDeleteForGoal)
 	// 子ども情報の登録、取得、削除
 	user.POST("/child", User.Child)
 	user.GET("/child", User.GetChildren)
-	user.DELETE("/child", User.DeleteChild)
+	user.DELETE("/child/:child_id", User.DeleteChild)
 	// デバイスID発行、取得、削除
 	user.POST("/device", Device.CreateNewDevice)
 	user.GET("/device", Device.ListDevice)
 	user.DELETE("/device/:device_id", Device.DeleteDevice)
 
-	// デバイスID紐付け
-	user.POST("/registration", Device.DeviceRegistration)
+	// BOCCOAPI
+	user.POST("/bocco", Bocco.RegistBocco)
+	user.GET("/bocco", Bocco.GetBoccoInfo)
+	user.DELETE("/bocco", Bocco.DeleteBoccoInfo)
 }
 
 func workRouter(work *gin.RouterGroup) {
-	// ユーザー情報削除
-	work.DELETE("/user", User.UserDeleteForWork)
-	// ICリーダー
-	work.POST("/reader", Reader.SendTag)
 	// 回答記録取得
 	work.GET("/record/:device_id", Record.WorkRecord)
-
 }
 
 func goalRouter(goal *gin.RouterGroup) {
-	// ユーザー情報削除
-	goal.DELETE("/user", User.UserDeleteForGoal)
-
-	// プッシュ回数変更
-	goal.POST("/push", Button.DeviceIncrement)
-
 	// 目標登録、取得、削除
 	goal.POST("/goal", Goal.CreateGoal)
-	goal.GET("/goal/:device_id", Goal.GetGoal)
-	goal.DELETE("/goal/:device_id", Goal.DeleteGoal)
+	goal.PUT("/goal", Goal.UpdateGoal)
+	goal.GET("/goal", Goal.GetGoal)
+	goal.DELETE("/goal/:goal_id", Goal.DeleteGoal)
 
 	// 目標達成操作
 	goal.PUT("/approval", Approval.ApprovalGoal)
 
-	// メッセージ登録、取得、削除
-	goal.POST("/message", Message.NewMessage)
-	goal.GET("/message/:device_id", Message.GetMessage)
-	goal.DELETE("/message/:device_id", Message.DeleteMessage)
+	// メッセージ登録、取得
+	goal.PUT("/message", Message.EditMessage)
+	goal.GET("/message", Message.GetMessage)
+}
+
+func thingRouter(thing *gin.RouterGroup) {
+	// デバイスID紐付け
+	thing.POST("/registration", Device.DeviceRegistration)
+	// ICリーダー
+	thing.POST("/reader", Reader.SendTag)
+	// プッシュ回数プラス1
+	thing.PUT("/button", Button.DeviceIncrement)
 }

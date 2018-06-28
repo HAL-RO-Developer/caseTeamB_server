@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Model struct {
 	ID        uint       `gorm:"primary_key" json:"id"`
@@ -34,4 +36,13 @@ type Device struct {
 	DeviceId string `json:"device_id"`
 	Pin      string `json:"pin"` // ボタン登録するための一時的な情報
 	Mac      string `json:"mac"` // ボタンのmacアドレス
+}
+
+// BOCCOAPI設定
+type Bocco struct {
+	Model
+	Name  string `json:"name"`
+	Key   string `json:"key"`
+	Email string `json:"email"`
+	Pass  string `json:"pass"`
 }

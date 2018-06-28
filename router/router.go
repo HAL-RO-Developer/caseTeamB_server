@@ -23,6 +23,10 @@ func GetRouter() *gin.Engine {
 	// teamB
 	goal := r.Group("/goal")
 	goalRouter(goal)
+
+	// デバイス側処理
+	thing := r.Group("/thing")
+	thingRouter(thing)
 	return r
 
 }
@@ -31,7 +35,7 @@ func cors(c *gin.Context) {
 	headers := c.Request.Header.Get("Access-Control-Request-Headers")
 
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE")
 	c.Writer.Header().Set("Access-Control-Allow-Headers", headers)
 	if c.Request.Method == "OPTIONS" {
 		c.Status(200)

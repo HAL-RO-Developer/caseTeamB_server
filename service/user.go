@@ -11,11 +11,6 @@ func (u *user) Store(user model.User) model.User {
 	db.Create(&user)
 	return user
 }
-func (u *user) ExisByEmail(email string) bool {
-	var users []model.User
-	db.Where("email = ?", email).Find(&users)
-	return len(users) != 0
-}
 
 func (u *user) ExisByName(name string) bool {
 	var users []model.User

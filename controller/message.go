@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
 )
@@ -10,10 +11,14 @@ import (
 var Message = messageimpl{}
 
 type messageimpl struct {
+	GoalId    string `json:"goal_id"`
+	Content   string `json:"content"`   // 目標内容
+	Condition int    `json:"condition"` // メッセージ発信条件
+	Message   string `json:"message"`   // メッセージ内容
 }
 
-// 新規メッセージ登録
-func (m *messageimpl) NewMessage(c *gin.Context) {
+// メッセージ編集
+func (m *messageimpl) EditMessage(c *gin.Context) {
 	_, ok := authorizationCheck(c)
 	if !ok {
 		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
@@ -26,14 +31,9 @@ func (m *messageimpl) NewMessage(c *gin.Context) {
 	}
 
 	// データベースへの重複防止
-	_, find := service.ExisByDeviceIdFromGoal(req.GoalId)
+	_, find := service.GetOneGoal(req.GoalId)
 	if !find {
 		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
-		return
-	}
-	_, find = service.ExisByButtonIdFromMessage(req.GoalId)
-	if find {
-		response.BadRequest(gin.H{"error": "メッセージ登録済みです。"}, c)
 		return
 	}
 
@@ -48,41 +48,29 @@ func (m *messageimpl) NewMessage(c *gin.Context) {
 
 // メッセージ取得
 func (m *messageimpl) GetMessage(c *gin.Context) {
-	_, ok := authorizationCheck(c)
+	var messages []messageimpl
+	var message messageimpl
+	var buf model.GoalData
+
+	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.BadRequest(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
-	buttonId := c.Param("device_id")
-
-	message, find := service.ExisByButtonIdFromMessage(buttonId)
+	data, find := service.GetMessageFromName(name)
 	if !find {
-		response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
-		return
-	}
-	response.Json(gin.H{message[0].Message: message[0].Condition}, c)
-}
-
-// メッセージ削除
-func (m *messageimpl) DeleteMessage(c *gin.Context) {
-	_, ok := authorizationCheck(c)
-	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.BadRequest(gin.H{"error": "メッセージが見つかりません。"}, c)
 		return
 	}
 
-	buttonId := c.Param("device_id")
-
-	_, find := service.ExisByButtonIdFromMessage(buttonId)
-	if !find {
-		response.BadRequest(gin.H{"error": "ボタンIDが見つかりません。"}, c)
-		return
+	for i := 0; i < len(data); i++ {
+		message.GoalId = data[i].GoalId
+		buf, _ = service.GetOneGoal(data[i].GoalId)
+		message.Content = buf.Content
+		message.Condition = data[i].Condition
+		message.Message = data[i].Message
+		messages = append(messages, message)
 	}
-
-	if service.DeleteMessage(buttonId) {
-		response.Json(gin.H{"success": "メッセージを削除しました。"}, c)
-		return
-	}
-	response.BadRequest(gin.H{"error": "データベースエラー"}, c)
+	response.Json(gin.H{"messages": messages}, c)
 }

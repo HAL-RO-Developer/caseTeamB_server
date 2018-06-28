@@ -7,38 +7,44 @@ import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
 
-// 子供ID検索
+// 子ども情報取得
 func FindByUserName(name string) ([]model.UserChild, bool) {
 	var children []model.UserChild
 	db.Where("name = ?", name).Find(&children)
 	return children, len(children) != 0
 }
 
+// 子どもID検索
+func exisByChildId(name string, childId int) bool {
+	var children []model.UserChild
+	db.Where("name = ? and child_id = ?", name, childId).Find(&children)
+	return len(children) != 0
+}
+
 // 子供情報追加
-func AddChild(name string, info validation.UserChildren) bool {
+func AddChild(name string, info validation.UserChildren) (int, bool) {
 	var i int
-	buf, find := FindByUserName(name)
-	if !find {
-		i = 1
+
+	for i = 1; exisByChildId(name, i) == true; i++ {
 	}
+	childId := i
 
-	i = len(buf) + 1
-	t, err := time.Parse("2006-01-02", info.BirthDay)
-
+	birthday, err := time.Parse("2006-01-02", info.BirthDay)
 	if err != nil {
-		return false
+		return 0, false
 	}
+
 	child := model.UserChild{
 		Name:     name,
-		ChildId:  i,
-		BirthDay: t,
+		ChildId:  childId,
+		BirthDay: birthday,
 		NickName: info.NickName,
 		Sex:      info.Sex,
 	}
 
 	err = db.Create(&child).Error
 	if err != nil {
-		return false
+		return 0, false
 	}
-	return true
+	return childId, true
 }

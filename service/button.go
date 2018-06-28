@@ -23,11 +23,10 @@ func RegistrationButton(pin string, mac string) (string, error) {
 }
 
 // 目標達成数変更
-// Todo BOCCOAPI追記
-func ApprovalGoal(device_id string, approval int) bool {
+func ApprovalGoal(goal_id string, approval int) bool {
 	approvalM.Lock()
-	goal := model.GoalDate{}
-	err := db.Where("device_id = ?", device_id).First(&goal).Error
+	goal := model.GoalData{}
+	err := db.Where("goal_id = ?", goal_id).First(&goal).Error
 	if err != nil {
 		approvalM.Unlock()
 		return false
