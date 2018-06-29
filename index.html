@@ -271,7 +271,7 @@
 <h4>Example URI</h4><div class="definition"><span class="method post">POST</span>&nbsp;<span class="uri"><span class="hostname"></span>/bocco</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">token</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"sample@gmail.com"</span></span>,
   "<span class="hljs-attribute">key</span>": <span class="hljs-value"><span class="hljs-string">"sample"</span></span>,
-  "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"abc123"</span>
+  "<span class="hljs-attribute">pass</span>": <span class="hljs-value"><span class="hljs-string">"abc123"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -282,7 +282,7 @@
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
       "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"APIkey"</span>
     </span>}</span>,
-    "<span class="hljs-attribute">password</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">pass</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}
   </span>}</span>,
@@ -573,7 +573,7 @@
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="bocco-x-目標ボタン-api-メッセージ" class="resource"><h3 class="resource-heading">メッセージ <a href="#bocco-x-目標ボタン-api-メッセージ" class="permalink">&nbsp;&para;</a></h3><div id="bocco-x-目標ボタン-api-メッセージ-put" class="action put"><h4 class="action-heading"><div class="name">メッセージ編集</div><a href="#bocco-x-目標ボタン-api-メッセージ-put" class="method put">PUT</a><code class="uri">/goal/message</code></h4><p>メッセージの編集を行います。</p>
 <h4>Example URI</h4><div class="definition"><span class="method put">PUT</span>&nbsp;<span class="uri"><span class="hostname"></span>/goal/message</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">token</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">goal_id</span>": <span class="hljs-value"><span class="hljs-string">"sample"</span></span>,
-  "<span class="hljs-attribute">condition</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
+  "<span class="hljs-attribute">message_call</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
   "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"practice"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
@@ -582,7 +582,7 @@
     "<span class="hljs-attribute">goal_id</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
-    "<span class="hljs-attribute">condition</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">message_call</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span></span>,
       "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"メッセージ出力条件"</span>
     </span>}</span>,
@@ -615,14 +615,14 @@
   "<span class="hljs-attribute">messages</span>": <span class="hljs-value">[
     {
       "<span class="hljs-attribute">goal_id</span>": <span class="hljs-value"><span class="hljs-string">"sample"</span></span>,
-      "<span class="hljs-attribute">goal_content</span>": <span class="hljs-value"><span class="hljs-string">"practice"</span></span>,
-      "<span class="hljs-attribute">condtion</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
+      "<span class="hljs-attribute">content</span>": <span class="hljs-value"><span class="hljs-string">"practice"</span></span>,
+      "<span class="hljs-attribute">message_call</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
       "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"practice"</span>
     </span>},
     {
       "<span class="hljs-attribute">goal_id</span>": <span class="hljs-value"><span class="hljs-string">"index"</span></span>,
-      "<span class="hljs-attribute">goal_content</span>": <span class="hljs-value"><span class="hljs-string">"test"</span></span>,
-      "<span class="hljs-attribute">condtion</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
+      "<span class="hljs-attribute">content</span>": <span class="hljs-value"><span class="hljs-string">"test"</span></span>,
+      "<span class="hljs-attribute">message_call</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
       "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"sample"</span>
     </span>}
   ]
@@ -726,14 +726,13 @@
   </span>}</span>,
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">achievement</span>": <span class="hljs-value"><span class="hljs-number">60</span>
+  "<span class="hljs-attribute">angle</span>": <span class="hljs-value"><span class="hljs-number">72</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
-    "<span class="hljs-attribute">achievement</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"目標の達成率"</span>
+    "<span class="hljs-attribute">angle</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
@@ -746,7 +745,7 @@
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}
   </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 28 Jun 2018</p><script>/* eslint-env browser */
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 29 Jun 2018</p><script>/* eslint-env browser */
 /* eslint quotes: [2, "single"] */
 'use strict';
 

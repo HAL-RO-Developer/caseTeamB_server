@@ -17,6 +17,7 @@ func main() {
 	db.DropTableIfExists(&model.Genre{})
 	db.DropTableIfExists(&model.Question{})
 	db.DropTableIfExists(&model.Record{})
+	db.DropTableIfExists(&model.Tag{})
 
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.UserChild{})
@@ -28,4 +29,5 @@ func main() {
 	db.AutoMigrate(&model.Genre{})
 	db.AutoMigrate(&model.Question{})
 	db.AutoMigrate(&model.Record{})
+	db.AutoMigrate(&model.Tag{})
 }

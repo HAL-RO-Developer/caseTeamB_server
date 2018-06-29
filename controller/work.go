@@ -12,10 +12,11 @@ var Record = recordimpl{}
 
 type recordimpl struct {
 	Date       time.Time `json:"date"`
-	BookId     int       `json:"book_id"`
-	QuestionNo int       `json:"q_no"`
-	Answer     int       `json:"answer"`
-	Correct    int       `json:"correct"`
+	GenreName  string    `json:"genre_name"`
+	Sentence   string    `json:"sentence"`
+	UserAnswer string    `json:"user_answer"`
+	Correct    string    `json:"correct"`
+	Result     bool      `json:"result"`
 }
 
 // 回答記録取得
@@ -25,7 +26,7 @@ func (r *recordimpl) WorkRecord(c *gin.Context) {
 
 	_, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.BadRequest(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -35,17 +36,17 @@ func (r *recordimpl) WorkRecord(c *gin.Context) {
 	if find {
 		for i := 0; i < len(records); i++ {
 			correct := service.ExisByCorrect(records[i].BookId, records[i].QuestionNo)
-			if correct == 0 {
+			if correct == "" {
 				response.BadRequest(gin.H{"error": "問題が見つかりませんでした。"}, c)
 				return
 			}
 
 			userRecord.Date = records[i].UpdatedAt
-			userRecord.BookId = records[i].BookId
+			/*userRecord.BookId = records[i].BookId
 			userRecord.QuestionNo = records[i].QuestionNo
 			userRecord.Answer = records[i].Answer
 			userRecord.Correct = correct
-			record = append(record, userRecord)
+			record = append(record, userRecord)*/
 		}
 		response.Json(gin.H{"data": record}, c)
 		return

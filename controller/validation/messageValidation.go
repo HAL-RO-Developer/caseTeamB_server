@@ -6,9 +6,9 @@ import (
 )
 
 type Message struct {
-	GoalId    string `json:"goal_id"`
-	Condition int    `json:"condition"`
-	Message   string `json:"message"`
+	GoalId      string `json:"goal_id"`
+	MessageCall int    `json:"message_call"`
+	Message     string `json:"message"`
 }
 
 func MessageValidation(c *gin.Context) (Message, bool) {

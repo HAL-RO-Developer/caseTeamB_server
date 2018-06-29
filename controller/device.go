@@ -76,7 +76,7 @@ func (d *deviceimpl) DeleteDevice(c *gin.Context) {
 
 	deviceId := c.Param("device_id")
 
-	if service.DeleteButtonId(name, deviceId) {
+	if service.DeleteDeviceId(name, deviceId) {
 		response.Json(gin.H{"success": "デバイスIDを削除しました。"}, c)
 		return
 	}
@@ -93,7 +93,7 @@ func (d *deviceimpl) DeviceRegistration(c *gin.Context) {
 		response.BadRequest(gin.H{"error": "pinが見つかりません。"}, c)
 		return
 	}
-	if !service.ExisByMac(req.Mac) {
+	if service.ExisByMac(req.Mac) {
 		response.BadRequest(gin.H{"error": "その端末は登録済みです。"}, c)
 		return
 	} else {

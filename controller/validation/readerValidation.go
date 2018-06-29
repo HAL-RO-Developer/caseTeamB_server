@@ -7,7 +7,7 @@ import (
 
 type Tag struct {
 	DeviceId string `json:"device_id"` // 読み取り機のdeviceID
-	Data     []Info `json:"data"`
+	Uuid     string `json:"uuid"`
 }
 
 type Info struct {
@@ -19,7 +19,7 @@ type Info struct {
 func ReaderValidation(c *gin.Context) (Tag, bool) {
 	var req Tag
 	err := c.BindJSON(&req)
-	if err != nil || len(req.Data) == 0 || req.DeviceId == "" {
+	if err != nil || len(req.Uuid) == 0 || req.DeviceId == "" {
 		response.BadRequest(gin.H{"error": "入力されていないデータがあります。"}, c)
 		return req, false
 	}

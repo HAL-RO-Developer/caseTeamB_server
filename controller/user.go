@@ -152,6 +152,13 @@ func (u *userimpl) DeleteChild(c *gin.Context) {
 		return
 	}
 
+	data, find := service.GetDeviceIdFromChildId(name, childId)
+	if find {
+		for i := 0; i < len(data); i++ {
+			service.DeleteDeviceIdFromChild(name, childId)
+		}
+	}
+
 	success := service.DeleteChild(name, childId)
 	if !success {
 		response.BadRequest(gin.H{"error": "子どもIDが見つかりませんでした。"}, c)

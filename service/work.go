@@ -10,12 +10,12 @@ func ExisByRecord(deviceId string) ([]model.Record, bool) {
 }
 
 // 問題番号から答えを取得
-func ExisByCorrect(bookId int, questionNo int) int {
+func ExisByCorrect(bookId int, questionNo int) string {
 	var question []model.Question
 	err := db.Where("book_id = ? and q_no = ?", bookId, questionNo).Find(&question).Error
 
 	if err != nil {
-		return 0
+		return ""
 	}
 	return question[0].Correct
 }

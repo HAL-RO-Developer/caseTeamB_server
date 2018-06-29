@@ -239,7 +239,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの入力
     + Attribute
         + email: sample@gmail.com
         + key : sample - APIkey
-        + password: abc123
+        + pass: abc123
 
 + Response 200 (application/json)
 
@@ -493,7 +493,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
     + Attribute
 
         + goal_id: sample
-        + condition : 5 (number) - メッセージ出力条件
+        + message_call : 5 (number) - メッセージ出力条件
         + message: practice
 
 + Response 200 (application/json)
@@ -525,13 +525,13 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
             + (object)
                 + goal_id: sample
                 + content: practice
-                + condtion: 5 (number)
+                + message_call: 5 (number)
                 + message: practice
 
             + (object)
                 + goal_id: index
                 + content: test
-                + condtion: 5 (number)
+                + message_call: 5 (number)
                 + message: sample
 
 + Response 400 (application/json)
@@ -602,7 +602,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
     + Attribute
 
-        + achievement: 60 (number) - 目標の達成率
+        + angle: 72 (number)
 
 + Response 400 (application/json)
 

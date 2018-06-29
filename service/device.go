@@ -91,10 +91,28 @@ func GetDeviceId(name string) ([]model.Device, bool) {
 	return devices, len(devices) != 0
 }
 
-// 指定されたボタンIDの削除
-func DeleteButtonId(name string, buttonId string) bool {
+func GetDeviceIdFromChildId(name string, childId int) ([]model.Device, bool) {
+	var devices []model.Device
+	db.Where("name = ? and child_id = ?", name, childId).Find(&devices)
+	return devices, len(devices) != 0
+}
+
+// 指定されたデバイスIDの削除
+func DeleteDeviceId(name string, buttonId string) bool {
 	var devices model.Device
 	db.Where("name = ? and device_id = ?", name, buttonId).First(&devices)
+	if devices.DeviceId == "" {
+		return false
+	}
+
+	db.Delete(devices)
+	return true
+}
+
+// 子どものデバイスIDの削除
+func DeleteDeviceIdFromChild(name string, childId int) bool {
+	var devices model.Device
+	db.Where("name = ? and child_id = ?", name, childId).First(&devices)
 	if devices.DeviceId == "" {
 		return false
 	}

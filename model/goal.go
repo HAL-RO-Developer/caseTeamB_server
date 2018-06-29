@@ -18,9 +18,9 @@ type GoalData struct {
 // 編集メッセージ
 type CustomMessage struct {
 	Model
-	Name      string `json:"name"`
-	ChildId   int    `json:"child_id"`
-	GoalId    string `json:"goal_id"`
-	Condition int    `json:"condition"` // メッセージ発信条件
-	Message   string `json:"message"`   // メッセージ内容
+	Name        string `json:"name"`
+	ChildId     int    `json:"child_id"`
+	GoalId      string `json:"goal_id"`
+	MessageCall int    `json:"message_call"` // メッセージ発信条件
+	Message     string `json:"message"`      // メッセージ内容
 }

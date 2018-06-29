@@ -9,6 +9,8 @@ import (
 
 	"encoding/json"
 
+	"net/http/httputil"
+
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
 
@@ -105,10 +107,18 @@ func SendMessage(uuid string, roomId string, token string, text string) bool {
 	values.Add("media", "text")
 	values.Add("access_token", token)
 
-	_, err := http.NewRequest("POST", messageURL+"?"+roomId+"/messages", strings.NewReader(values.Encode()))
+	req, err := http.NewRequest("POST", messageURL+"/"+roomId+"/messages", strings.NewReader(values.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept-Language", "ja")
 	if err != nil {
 		return false
 	}
+
+	client := new(http.Client)
+	resp, err := client.Do(req)
+
+	dumpResp, _ := httputil.DumpResponse(resp, true)
+	fmt.Printf("%s", dumpResp)
 
 	return true
 }

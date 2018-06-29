@@ -11,10 +11,10 @@ import (
 var Message = messageimpl{}
 
 type messageimpl struct {
-	GoalId    string `json:"goal_id"`
-	Content   string `json:"content"`   // 目標内容
-	Condition int    `json:"condition"` // メッセージ発信条件
-	Message   string `json:"message"`   // メッセージ内容
+	GoalId      string `json:"goal_id"`
+	Content     string `json:"content"`      // 目標内容
+	MessageCall int    `json:"message_call"` // メッセージ発信条件
+	Message     string `json:"message"`      // メッセージ内容
 }
 
 // メッセージ編集
@@ -37,13 +37,25 @@ func (m *messageimpl) EditMessage(c *gin.Context) {
 		return
 	}
 
-	// 新規メッセージ登録
-	err := service.RegistrationMessage(req.GoalId, req.Condition, req.Message)
-	if err != nil {
-		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
-		return
+	// メッセージ登録確認
+	find = service.ExisMessageFromGoal(req.GoalId, req.MessageCall)
+	if find {
+		// メッセージを更新
+		err := service.UpdateMessage(req.GoalId, req.MessageCall, req.Message)
+		if err != nil {
+			response.BadRequest(gin.H{"error": "メッセージの更新に失敗しました。"}, c)
+			return
+		}
+	} else {
+		// 新規メッセージ登録
+		err := service.RegistrationMessage(req.GoalId, req.MessageCall, req.Message)
+		if err != nil {
+			response.BadRequest(gin.H{"error": "データベースエラー"}, c)
+			return
+		}
 	}
-	response.Json(gin.H{"success": "メッセージを登録しました。"}, c)
+
+	response.Json(gin.H{"success": "メッセージを更新しました。"}, c)
 }
 
 // メッセージ取得
@@ -68,7 +80,7 @@ func (m *messageimpl) GetMessage(c *gin.Context) {
 		message.GoalId = data[i].GoalId
 		buf, _ = service.GetOneGoal(data[i].GoalId)
 		message.Content = buf.Content
-		message.Condition = data[i].Condition
+		message.MessageCall = data[i].MessageCall
 		message.Message = data[i].Message
 		messages = append(messages, message)
 	}
