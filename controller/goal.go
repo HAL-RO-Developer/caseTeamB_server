@@ -28,7 +28,7 @@ type goalimpl struct {
 func (g *goalimpl) CreateGoal(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -39,7 +39,7 @@ func (g *goalimpl) CreateGoal(c *gin.Context) {
 
 	goalId, err := service.RegistrationGoal(name, req)
 	if err != nil {
-		response.BadRequest(gin.H{"error": "データベースエラー"}, c)
+		response.BadRequest(gin.H{"error": "目標登録に失敗しました。"}, c)
 		return
 	}
 	response.Json(gin.H{"goal_id": goalId}, c)
@@ -49,7 +49,7 @@ func (g *goalimpl) CreateGoal(c *gin.Context) {
 func (g *goalimpl) UpdateGoal(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -73,7 +73,7 @@ func (g *goalimpl) GetGoal(c *gin.Context) {
 	var goal goalimpl
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -117,7 +117,7 @@ func (g *goalimpl) GetGoal(c *gin.Context) {
 func (g *goalimpl) DeleteGoal(c *gin.Context) {
 	_, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 

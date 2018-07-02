@@ -26,6 +26,13 @@ func GetMessageFromName(name string) ([]model.CustomMessage, bool) {
 	return messages, len(messages) != 0
 }
 
+// 目標取得
+func GetMessageFromNameChild(name string, childId int) ([]model.CustomMessage, bool) {
+	var messages []model.CustomMessage
+	db.Where("name = ? and child_id = ?", name, childId).Find(&messages)
+	return messages, len(messages) != 0
+}
+
 // メッセージ取得
 func GetMessageFromGoal(goalId string) ([]model.CustomMessage, bool) {
 	var messages []model.CustomMessage

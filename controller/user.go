@@ -41,7 +41,7 @@ func (u *userimpl) Create(c *gin.Context) {
 func (u *userimpl) UserDeleteForWork(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -63,7 +63,7 @@ func (u *userimpl) UserDeleteForWork(c *gin.Context) {
 func (u *userimpl) UserDeleteForGoal(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "ログインエラー"}, c)
 		return
 	}
 
@@ -97,31 +97,27 @@ func (u *userimpl) GetChildren(c *gin.Context) {
 
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
-	buf, find := service.FindByUserName(name)
+	buf, _ := service.FindByUserName(name)
 
-	if find {
-		for i := 0; i < len(buf); i++ {
-			child.ChildId = buf[i].ChildId
-			child.BirthDay = buf[i].BirthDay
-			child.NickName = buf[i].NickName
-			child.Sex = buf[i].Sex
-			children = append(children, child)
-		}
-		response.Json(gin.H{"children": children}, c)
-		return
+	for i := 0; i < len(buf); i++ {
+		child.ChildId = buf[i].ChildId
+		child.BirthDay = buf[i].BirthDay
+		child.NickName = buf[i].NickName
+		child.Sex = buf[i].Sex
+		children = append(children, child)
 	}
-	response.BadRequest(gin.H{"error": "子供情報が見つかりませんでした。"}, c)
+	response.Json(gin.H{"children": children}, c)
 }
 
 // 子供情報追加
 func (u *userimpl) Child(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -142,7 +138,7 @@ func (u *userimpl) Child(c *gin.Context) {
 func (u *userimpl) DeleteChild(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "アクセストークンが不正です。"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 

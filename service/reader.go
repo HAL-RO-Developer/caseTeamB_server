@@ -2,13 +2,23 @@ package service
 
 import "github.com/HAL-RO-Developer/caseTeamB_server/model"
 
-func SendUserSolution(device_id string, bookId int, questionNo int, answer int) error {
-	record := model.Record{
-		//DeviceId:   device_id,
-		BookId:     bookId,
-		QuestionNo: questionNo,
-		Answer:     answer,
+// ユーザーの回答データ送信
+func SendUserAnswer(device_id string, uuid string) bool {
+	deviceInfo, find := GetDeviceInfoFromDeviceId(device_id)
+	if !find {
+		return false
 	}
 
-	return db.Create(&record).Error
+	//tagInfo, find := GetTagDataFromTagId(uuid)
+	record := model.Record{
+		Name:    deviceInfo[0].Name,
+		ChildId: deviceInfo[0].ChildId,
+		//BookId:
+	}
+
+	err := db.Create(&record).Error
+	if err != nil {
+		return false
+	}
+	return true
 }

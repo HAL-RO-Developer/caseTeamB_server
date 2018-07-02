@@ -187,16 +187,19 @@ FORMAT: 1A
 + Response 200 (application/json)
 
     + Attributes
-
+        
         + devices (array)
             + (object)
-                + device_id: sample
-                + device_alive: true (boolean)
-
+                + child_id :1 (number)
+                + child_devices (array)
+                    + sample,
+                    + index
             + (object)
-                + device_id: index
-                + device_alive: false (boolean)
-
+                + child_id: 2 (number)
+                + child_devices (array)
+                    + test,
+                    + buf
+            
 + Response 400 (application/json)
 
     + Attribute
@@ -311,7 +314,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 + Response 200 (application/json)
 
     + Attributes
-        + record (array)
+        + records (array)
             + (object)
                 + date: `2018-06-21T13:35:08+09:00` - 回答日時
                 + genre_name: 算数 - 問題のジャンル名
@@ -336,7 +339,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
 # Group BOCCO x 目標ボタン API
 
-## 目標 [/goal/goal/{child_id}/{goal_id}]
+## 目標 [/goal/goal/{goal_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
@@ -480,10 +483,10 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
-## メッセージ [/goal/message]
+## メッセージ [/goal/message/{goal_id}/{message_call}]
 
-### メッセージ編集[PUT]
-メッセージの編集を行います。
+### メッセージ登録[POST]
+オリジナルメッセージの登録を行います。
 
 + Request (application/json)
     + Headers
@@ -508,7 +511,6 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
-
 ### メッセージ取得[GET]
 登録されているメッセージとメッセージ出力条件を取得します。
 
@@ -523,16 +525,55 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + messages(array)
             + (object)
-                + goal_id: sample
-                + content: practice
-                + message_call: 5 (number)
-                + message: practice
-
+                + child_id: 1 (number)
+                + child_messages(array)
+                    + (object)
+                        + goal_id: sample
+                        + content: practice
+                        + message_call: 2 (number)
+                        + message: practice
+                    + (object)
+                        + goal_id: index
+                        + content: test
+                        + message_call: 5 (number)
+                        + message: sample
             + (object)
-                + goal_id: index
-                + content: test
-                + message_call: 5 (number)
-                + message: sample
+                + child_id: 2 (number)
+                + child_messages(array)
+                    + (object)
+                        + goal_id: buf
+                        + content: sample
+                        + message_call: 3 (number)
+                        + message: sample
+                    + (object)
+                        + goal_id: hoge
+                        + content: test
+                        + message_call: 10 (number)
+                        + message: hoge
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### メッセージ登録[DELETE]
+オリジナルメッセージの削除を行います。
+
++ Parameters
+    + goal_id: sample
+    + message_call: 5 (number)
+
++ Request (application/json)
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: メッセージを編集しました。
 
 + Response 400 (application/json)
 
@@ -574,7 +615,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
     + Attribute
         + device_id: sample
-        + uuid: 1234 (number)
+        + uuid: 1234
         
 + Response 200 (application/json)
 

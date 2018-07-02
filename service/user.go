@@ -7,6 +7,8 @@ var User = user{}
 type user struct {
 }
 
+var db = model.GetDBConn()
+
 func (u *user) Store(user model.User) model.User {
 	db.Create(&user)
 	return user
@@ -36,6 +38,16 @@ func DeleteUser(name string) bool {
 	}
 	db.Delete(&user)
 	return true
+}
+
+// 子ども情報取得
+func GetChildInfo(name string) ([]model.UserChild, bool) {
+	var children []model.UserChild
+	err := db.Where("name = ?", name).Find(&children).Error
+	if err != nil {
+		return nil, false
+	}
+	return children, true
 }
 
 // こどもID検索

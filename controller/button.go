@@ -24,7 +24,7 @@ func (b *buttonimpl) DeviceIncrement(c *gin.Context) {
 		return
 	}
 
-	bocco, find := service.ExisByDeviceId(req.DeviceId)
+	bocco, find := service.GetDeviceInfoFromDeviceId(req.DeviceId)
 	if !find {
 		response.BadRequest(gin.H{"error": "デバイスIDが見つかりません。"}, c)
 	} else {

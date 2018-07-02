@@ -6,6 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func TokenError(obj interface{}, c *gin.Context) {
+	c.JSON(http.StatusUnauthorized, obj)
+}
 func BadRequest(obj interface{}, c *gin.Context) {
 	c.JSON(http.StatusBadRequest, obj)
 }

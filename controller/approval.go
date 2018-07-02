@@ -16,7 +16,7 @@ type approvalimpl struct {
 func (A *approvalimpl) ApprovalGoal(c *gin.Context) {
 	_, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 

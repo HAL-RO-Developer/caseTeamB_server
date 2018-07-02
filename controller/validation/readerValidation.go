@@ -10,16 +10,10 @@ type Tag struct {
 	Uuid     string `json:"uuid"`
 }
 
-type Info struct {
-	BookId     int `json:"book_id"`
-	QuestionNo int `json:"q_no"`
-	UserAns    int `json:"user_answer"`
-}
-
 func ReaderValidation(c *gin.Context) (Tag, bool) {
 	var req Tag
 	err := c.BindJSON(&req)
-	if err != nil || len(req.Uuid) == 0 || req.DeviceId == "" {
+	if err != nil || req.DeviceId == "" || req.Uuid == "" {
 		response.BadRequest(gin.H{"error": "入力されていないデータがあります。"}, c)
 		return req, false
 	}

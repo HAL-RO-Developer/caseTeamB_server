@@ -34,7 +34,6 @@ type Device struct {
 	Name     string `json:"name"`
 	ChildId  int    `json:"child_id"`
 	DeviceId string `json:"device_id"`
-	Pin      string `json:"pin"` // ボタン登録するための一時的な情報
 	Mac      string `json:"mac"` // ボタンのmacアドレス
 }
 

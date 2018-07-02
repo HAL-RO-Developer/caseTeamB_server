@@ -3,9 +3,13 @@ package service
 import (
 	"time"
 
+	"sync"
+
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
+
+var approvalM = new(sync.Mutex)
 
 // 目標の新規登録
 func RegistrationGoal(name string, info validation.Goal) (string, error) {
@@ -42,6 +46,26 @@ func RegistrationGoal(name string, info validation.Goal) (string, error) {
 	}
 	err = db.Create(&registration).Error
 	return goalId, err
+}
+
+// 目標達成数変更
+func ApprovalGoal(goal_id string, approval int) bool {
+	approvalM.Lock()
+	goal := model.GoalData{}
+	err := db.Where("goal_id = ?", goal_id).First(&goal).Error
+	if err != nil {
+		approvalM.Unlock()
+		return false
+	}
+
+	goal.Run += approval
+	if goal.Run < 0 {
+		approvalM.Unlock()
+		return false
+	}
+	err = db.Model(&goal).Update(&goal).Update("run", goal.Run).Error
+	approvalM.Unlock()
+	return true
 }
 
 // ボタン登録

@@ -16,7 +16,7 @@ type boccoimpl struct {
 func (b *boccoimpl) RegistBocco(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -50,7 +50,7 @@ func (b *boccoimpl) RegistBocco(c *gin.Context) {
 func (b *boccoimpl) GetBoccoInfo(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -67,7 +67,7 @@ func (b *boccoimpl) GetBoccoInfo(c *gin.Context) {
 func (b *boccoimpl) DeleteBoccoInfo(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 	_, find := service.ExisByBoccoAPI(name)

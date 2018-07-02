@@ -26,29 +26,38 @@ func (r *recordimpl) WorkRecord(c *gin.Context) {
 
 	_, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "アクセストークンが不正です。"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
 	readerId := c.Param("device_id")
 	records, find := service.ExisByRecord(readerId)
 
+	// 回答情報が見つかった時
 	if find {
+		// 回答情報分繰り返し
 		for i := 0; i < len(records); i++ {
-			correct := service.ExisByCorrect(records[i].BookId, records[i].QuestionNo)
-			if correct == "" {
+			correctId := service.GetByCorrect(records[i].BookId, records[i].QuestionNo)
+			if correctId == "" {
 				response.BadRequest(gin.H{"error": "問題が見つかりませんでした。"}, c)
 				return
 			}
 
 			userRecord.Date = records[i].UpdatedAt
-			/*userRecord.BookId = records[i].BookId
-			userRecord.QuestionNo = records[i].QuestionNo
-			userRecord.Answer = records[i].Answer
-			userRecord.Correct = correct
-			record = append(record, userRecord)*/
+			userRecord.GenreName = service.GetGenreName(records[i].BookId)
+			tagData := service.GetTagDataFromBookId(records[i].BookId, records[i].QuestionNo)
+			userRecord.Sentence = tagData[0].Sentence
+			userRecord.UserAnswer = records[i].UserAnswer
+			correct := service.GetTagDataFromTagId(correctId)
+			userRecord.Correct = correct[0].Answer
+			if records[i].UserAnswer == correct[0].Answer {
+				userRecord.Result = true
+			} else {
+				userRecord.Result = false
+			}
+			record = append(record, userRecord)
 		}
-		response.Json(gin.H{"data": record}, c)
+		response.Json(gin.H{"records": record}, c)
 		return
 	}
 	response.BadRequest(gin.H{"error": "回答情報が見つかりませんでした。"}, c)

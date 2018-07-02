@@ -41,9 +41,10 @@ func goalRouter(goal *gin.RouterGroup) {
 	// 目標達成操作
 	goal.PUT("/approval", Approval.ApprovalGoal)
 
-	// メッセージ登録、取得
-	goal.PUT("/message", Message.EditMessage)
+	// メッセージ登録、取得、削除
+	goal.POST("/message", Message.EditMessage)
 	goal.GET("/message", Message.GetMessage)
+	goal.DELETE("/message/:goal_id/:message_call")
 }
 
 func thingRouter(thing *gin.RouterGroup) {

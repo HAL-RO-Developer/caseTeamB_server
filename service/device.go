@@ -7,34 +7,71 @@ import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 )
 
-// デバイスID新規登録
+var RegistInfo []deviceInfo
+
+type deviceInfo struct {
+	Name    string
+	ChildId int
+	Pin     string
+}
+
+// デバイス情報新規登録
 func CreateDevice(name string, childId int) (string, bool) {
+	var info deviceInfo
 	if ExisByChildId(name, childId) == false {
 		return "子どもIDが存在しません。", false
 	}
 
-	deviceID := createId()
-	pin := createPin()
+	info.Name = name
+	info.ChildId = childId
+	info.Pin = createPin()
+	RegistInfo = append(RegistInfo, info)
+
+	return info.Pin, true
+}
+
+// macAddr&デバイスID登録
+func RegistrationDevice(pin string, mac string) (string, bool) {
+	buf, find := GetPin(pin)
+	if !find {
+		return "pinが見つかりませんでした。", false
+	}
+	RegistInfo = PinRemove(pin)
+
+	deviceId := CreateDeviceId()
 
 	device := model.Device{
-		Name:     name,
-		ChildId:  childId,
-		DeviceId: deviceID,
-		Pin:      pin,
+		Name:     buf.Name,
+		ChildId:  buf.ChildId,
+		DeviceId: deviceId,
+		Mac:      mac,
 	}
+
 	err := db.Create(&device).Error
 	if err != nil {
 		return "デバイスIDが登録できませんでした。", false
 	}
-	return pin, true
+	return deviceId, true
+}
+
+// pin削除
+func DeletePin(pin string) bool {
+	device := model.Device{}
+	err := db.Where("pin = ?", pin).First(&device).Error
+	if err != nil {
+		return false
+	}
+
+	db.Delete(device)
+	return true
 }
 
 // デバイスID作成
-func createId() string {
+func CreateDeviceId() string {
 	var deviceId string
 	for {
 		deviceId = createUuid(12, []rune("ABCDEFGHRJKLNMOPQRSTUPWXYZabcdefghijklmnopqrstuvwxyz0123456789"))
-		_, find := ExisByDeviceId(deviceId)
+		_, find := GetDeviceInfoFromDeviceId(deviceId)
 		if !find {
 			break
 		}
@@ -57,7 +94,8 @@ func createPin() string {
 	var pin string
 	for {
 		pin = createUuid(4, []rune("0123456789"))
-		if !ExisByPin(pin) {
+		_, find := GetPin(pin)
+		if !find {
 			break
 		}
 	}
@@ -65,17 +103,20 @@ func createPin() string {
 }
 
 // データベースからデバイス情報取得
-func ExisByDeviceId(deviceId string) ([]model.Device, bool) {
+func GetDeviceInfoFromDeviceId(deviceId string) ([]model.Device, bool) {
 	var devices []model.Device
 	db.Where("device_id = ?", deviceId).Find(&devices)
 	return devices, len(devices) != 0
 }
 
-// データベースからPin検索
-func ExisByPin(pin string) bool {
-	var devices []model.Device
-	db.Where("pin = ?", pin).Find(&devices)
-	return len(devices) != 0
+// 配列からPin検索
+func GetPin(pin string) (deviceInfo, bool) {
+	for _, v := range RegistInfo {
+		if v.Pin == pin {
+			return v, true
+		}
+	}
+	return deviceInfo{}, false
 }
 
 func ExisByMac(mac string) bool {
@@ -91,6 +132,7 @@ func GetDeviceId(name string) ([]model.Device, bool) {
 	return devices, len(devices) != 0
 }
 
+// デバイス情報取得(ユーザー名と子どもIDから)
 func GetDeviceIdFromChildId(name string, childId int) ([]model.Device, bool) {
 	var devices []model.Device
 	db.Where("name = ? and child_id = ?", name, childId).Find(&devices)
@@ -130,4 +172,15 @@ func DeleteButtonFirst(name string) bool {
 	}
 	db.Delete(devices)
 	return true
+}
+
+// スライスの中身削除
+func PinRemove(pin string) []deviceInfo {
+	result := []deviceInfo{}
+	for _, v := range RegistInfo {
+		if v.Pin != pin {
+			result = append(result, v)
+		}
+	}
+	return result
 }

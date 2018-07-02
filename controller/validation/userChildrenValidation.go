@@ -9,6 +9,7 @@ type UserChildren struct {
 	BirthDay string `json:"birthday"`
 	NickName string `json:"nickname"`
 	Sex      int    `json:"sex"`
+	DeviceId string `json:"device_id"`
 }
 
 type childId struct {

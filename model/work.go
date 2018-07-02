@@ -17,7 +17,7 @@ type Genre struct {
 // ドリル問題情報
 type Question struct {
 	Model
-	BookId     string `json:"book_id"`
+	BookId     int    `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
 	Sentence   string `json:"sentence"` // TagId
 	Correct    string `json:"correct"`  // TagId
@@ -30,17 +30,17 @@ type Record struct {
 	ChildId    int    `json:"child_id"`
 	BookId     int    `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
-	Answer     int    `json:"user_answer"` // ユーザーの回答
-	Challenge  int    `json:"challege"`    // チャレンジ実行タイプ
+	UserAnswer string `json:"user_answer"` // ユーザーの回答
+	Challenge  int    `json:"challenge"`   // チャレンジ実行タイプ
 }
 
 // タグ情報
 type Tag struct {
 	Model
-	TagId      string `json:"tag"`
+	TagId      string `json:"tag_id"`
 	Uuid       string `json:"uuid"`
-	BookId     string `json:"book_id"`
+	BookId     int    `json:"book_id"`
 	QuestionNo int    `json:"q_no"`
 	Sentence   string `json:"sentence"`
-	Answer     int    `json:"user_answer"`
+	Answer     string `json:"answer"`
 }

@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
-	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +10,14 @@ import (
 var Message = messageimpl{}
 
 type messageimpl struct {
+}
+
+type messageInfo struct {
+	ChildId  int           `json:"child_id"`
+	Messages []messageData `json:"child_messages"`
+}
+
+type messageData struct {
 	GoalId      string `json:"goal_id"`
 	Content     string `json:"content"`      // 目標内容
 	MessageCall int    `json:"message_call"` // メッセージ発信条件
@@ -21,7 +28,7 @@ type messageimpl struct {
 func (m *messageimpl) EditMessage(c *gin.Context) {
 	_, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "ログインエラー"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -60,13 +67,13 @@ func (m *messageimpl) EditMessage(c *gin.Context) {
 
 // メッセージ取得
 func (m *messageimpl) GetMessage(c *gin.Context) {
-	var messages []messageimpl
-	var message messageimpl
-	var buf model.GoalData
+	var userMessage []messageInfo
+	var childMsg messageInfo
+	var message messageData
 
 	name, ok := authorizationCheck(c)
 	if !ok {
-		response.BadRequest(gin.H{"error": "アクセストークンが不正です。"}, c)
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
@@ -75,14 +82,23 @@ func (m *messageimpl) GetMessage(c *gin.Context) {
 		response.BadRequest(gin.H{"error": "メッセージが見つかりません。"}, c)
 		return
 	}
+	children, _ := service.GetChildInfo(name)
+	for i := 0; i < len(children); i++ {
+		messages, find := service.GetMessageFromNameChild(name, children[i].ChildId)
+		if !find {
 
-	for i := 0; i < len(data); i++ {
-		message.GoalId = data[i].GoalId
-		buf, _ = service.GetOneGoal(data[i].GoalId)
-		message.Content = buf.Content
-		message.MessageCall = data[i].MessageCall
-		message.Message = data[i].Message
-		messages = append(messages, message)
+		} else {
+			childMsg.ChildId = messages[i].ChildId
+			for j := 0; j < len(messages); j++ {
+				message.GoalId = data[i].GoalId
+				buf, _ := service.GetOneGoal(data[i].GoalId)
+				message.Content = buf.Content
+				message.MessageCall = data[i].MessageCall
+				message.Message = data[i].Message
+				childMsg.Messages = append(childMsg.Messages, message)
+			}
+			userMessage = append(userMessage, childMsg)
+		}
 	}
-	response.Json(gin.H{"messages": messages}, c)
+	response.Json(gin.H{"messages": userMessage}, c)
 }
