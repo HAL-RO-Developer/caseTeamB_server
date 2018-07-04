@@ -44,7 +44,7 @@ func goalRouter(goal *gin.RouterGroup) {
 	// メッセージ登録、取得、削除
 	goal.POST("/message", Message.EditMessage)
 	goal.GET("/message", Message.GetMessage)
-	goal.DELETE("/message/:goal_id/:message_call")
+	goal.DELETE("/message/:goal_id/:message_call", Message.DeleteMessage)
 }
 
 func thingRouter(thing *gin.RouterGroup) {

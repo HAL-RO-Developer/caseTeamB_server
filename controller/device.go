@@ -5,6 +5,7 @@ import (
 
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
 )
@@ -15,8 +16,9 @@ type deviceimpl struct {
 }
 
 type deviceInfo struct {
-	ChildId int      `json:"child_id"`
-	Devices []string `json:"child_devices"`
+	ChildId  int      `json:"child_id"`
+	Nickname string   `json:"nickname"`
+	Devices  []string `json:"child_devices"`
 }
 
 // デバイスID発行
@@ -52,6 +54,8 @@ func (d *deviceimpl) CreateNewDevice(c *gin.Context) {
 func (d *deviceimpl) ListDevice(c *gin.Context) {
 	var userDevices []deviceInfo
 	var device deviceInfo
+	var devices []model.Device
+	var childData []model.UserChild
 
 	name, ok := authorizationCheck(c)
 	if !ok {
@@ -61,22 +65,26 @@ func (d *deviceimpl) ListDevice(c *gin.Context) {
 
 	_, find := service.GetDeviceId(name)
 	if !find {
-		response.BadRequest(gin.H{"error": "デバイスが登録されていません。"}, c)
+		response.Json(gin.H{"devices": userDevices}, c)
 		return
 	}
 	children, _ := service.GetChildInfo(name)
+	/* 子どもIDの数繰り返し */
 	for i := 0; i < len(children); i++ {
-		devices, find := service.GetDeviceIdFromChildId(name, children[i].ChildId)
+		devices, find = service.GetDeviceIdFromChildId(name, children[i].ChildId)
 		if !find {
-
 		} else {
-			device.ChildId = devices[i].ChildId
+			device.ChildId = children[i].ChildId
+			childData, _ = service.GetByChildInfo(name, children[i].ChildId)
+			device.Nickname = childData[0].NickName
+			/* デバイスIDの数繰り返し */
 			for j := 0; j < len(devices); j++ {
-				if devices[i].Mac != "" {
-					device.Devices = append(device.Devices, devices[i].DeviceId)
+				if devices[j].Mac != "" {
+					device.Devices = append(device.Devices, devices[j].DeviceId)
 				}
 			}
 			userDevices = append(userDevices, device)
+			device.Devices = nil
 		}
 	}
 	response.Json(gin.H{"devices": userDevices}, c)

@@ -25,12 +25,10 @@ func (b *buttonimpl) DeviceIncrement(c *gin.Context) {
 	}
 
 	bocco, find := service.GetDeviceInfoFromDeviceId(req.DeviceId)
-	if !find {
-		response.BadRequest(gin.H{"error": "デバイスIDが見つかりません。"}, c)
-	} else {
+	if find {
 		data, find := service.GetGoalFromDeviceId(req.DeviceId)
 		if !find {
-			response.BadRequest(gin.H{"error": "目標が見つかりません。"}, c)
+			response.Json(gin.H{"angle": "目標が見つかりません。"}, c)
 			return
 		}
 
@@ -42,18 +40,27 @@ func (b *buttonimpl) DeviceIncrement(c *gin.Context) {
 		// 押下回数追加後データ取得
 		data, _ = service.GetGoalFromDeviceId(req.DeviceId)
 		// サーボモーターの移動角度計算
-		progress := (data[0].Run / data[0].Criteria) * 100 * 18 / 10
-		message, _ := service.GetMessageFromGoal(data[0].GoalId)
-		fmt.Println(data[0].Run)
+		progress := (float64(data[0].Run) / float64(data[0].Criteria)) * 100 * 10 / 8
+		message, find := service.GetMessageFromGoal(data[0].GoalId)
+		if !find {
+			response.Json(gin.H{"angle": int(progress)}, c)
+			return
+		}
 		// 目標の実行回数がメッセージの発信条件を満たした時
 		if data[0].Run == message[0].MessageCall {
-			boccoInfo, _ := service.ExisByBoccoAPI(bocco[0].Name)
+			boccoInfo, find := service.ExisByBoccoAPI(bocco[0].Name)
+			if !find {
+				fmt.Println("test")
+				response.Json(gin.H{"angle": int(progress)}, c)
+				return
+			}
 			boccoToken, _ := service.GetBoccoToken(boccoInfo[0].Email, boccoInfo[0].Key, boccoInfo[0].Pass)
 			roomId, _ := service.GetRoomId(boccoToken)
 			uuid := uuid.Must(uuid.NewV4()).String()
 			service.SendMessage(uuid, roomId, boccoToken, message[0].Message)
 		}
-
-		response.Json(gin.H{"angle": progress}, c)
+		response.Json(gin.H{"angle": int(progress)}, c)
+		return
 	}
+	response.Json(gin.H{"angle": "デバイスIDが見つかりません。"}, c)
 }

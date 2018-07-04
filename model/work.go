@@ -18,7 +18,7 @@ type Genre struct {
 type Question struct {
 	Model
 	BookId     int    `json:"book_id"`
-	QuestionNo int    `json:"q_no"`
+	QuestionNo int    `json:"question_no"`
 	Sentence   string `json:"sentence"` // TagId
 	Correct    string `json:"correct"`  // TagId
 }
@@ -29,7 +29,7 @@ type Record struct {
 	Name       string `json:"name"`
 	ChildId    int    `json:"child_id"`
 	BookId     int    `json:"book_id"`
-	QuestionNo int    `json:"q_no"`
+	QuestionNo int    `json:"question_no"`
 	UserAnswer string `json:"user_answer"` // ユーザーの回答
 	Challenge  int    `json:"challenge"`   // チャレンジ実行タイプ
 }
@@ -40,7 +40,7 @@ type Tag struct {
 	TagId      string `json:"tag_id"`
 	Uuid       string `json:"uuid"`
 	BookId     int    `json:"book_id"`
-	QuestionNo int    `json:"q_no"`
+	QuestionNo int    `json:"question_no"`
 	Sentence   string `json:"sentence"`
 	Answer     string `json:"answer"`
 }

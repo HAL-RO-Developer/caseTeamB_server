@@ -17,6 +17,8 @@ func RegistrationGoal(name string, info validation.Goal) (string, error) {
 	var deadline time.Time
 	var err error
 
+	now := time.Now()
+
 	goalId := createGoalId()
 
 	// 目標に期限がない時
@@ -31,8 +33,12 @@ func RegistrationGoal(name string, info validation.Goal) (string, error) {
 		}
 	} else {
 		deadline, err = time.Parse("2006-01-02", info.Deadline)
+
 		if err != nil {
-			return "", err
+			return "目標登録に失敗しました。", err
+		}
+		if !deadline.After(now) {
+			return "目標期限が過去です。", err
 		}
 		registration = model.GoalData{
 			Name:     name,
@@ -78,13 +84,6 @@ func UpdateGoal(name string, info validation.UpdateGoal) error {
 
 	err = db.Model(&goal).Update(&goal).Update("device_id", info.DeviceId).Error
 	return err
-}
-
-// 目標取得(ユーザー毎)
-func GetGoal(name string) ([]model.GoalData, bool) {
-	var goals []model.GoalData
-	db.Where("name = ?", name).Find(&goals)
-	return goals, len(goals) != 0
 }
 
 // 目標取得(デバイスID)

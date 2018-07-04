@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +17,7 @@ type messageimpl struct {
 
 type messageInfo struct {
 	ChildId  int           `json:"child_id"`
+	Nickname string        `json:"nickname"`
 	Messages []messageData `json:"child_messages"`
 }
 
@@ -70,6 +74,9 @@ func (m *messageimpl) GetMessage(c *gin.Context) {
 	var userMessage []messageInfo
 	var childMsg messageInfo
 	var message messageData
+	var messages []model.CustomMessage
+	var buf model.GoalData
+	var childData []model.UserChild
 
 	name, ok := authorizationCheck(c)
 	if !ok {
@@ -77,28 +84,58 @@ func (m *messageimpl) GetMessage(c *gin.Context) {
 		return
 	}
 
-	data, find := service.GetMessageFromName(name)
+	_, find := service.GetMessageFromName(name)
 	if !find {
-		response.BadRequest(gin.H{"error": "メッセージが見つかりません。"}, c)
+		response.Json(gin.H{"messages": userMessage}, c)
 		return
 	}
 	children, _ := service.GetChildInfo(name)
+	/* 子どもIDの数繰り返し */
 	for i := 0; i < len(children); i++ {
-		messages, find := service.GetMessageFromNameChild(name, children[i].ChildId)
+		messages, find = service.GetMessageFromNameChild(name, children[i].ChildId)
 		if !find {
 
 		} else {
-			childMsg.ChildId = messages[i].ChildId
+			childMsg.ChildId = children[i].ChildId
+			childData, _ = service.GetByChildInfo(name, children[i].ChildId)
+			childMsg.Nickname = childData[0].NickName
+			/* メッセージの数繰り返し */
 			for j := 0; j < len(messages); j++ {
-				message.GoalId = data[i].GoalId
-				buf, _ := service.GetOneGoal(data[i].GoalId)
+				message.GoalId = messages[j].GoalId
+				buf, _ = service.GetOneGoal(messages[j].GoalId)
 				message.Content = buf.Content
-				message.MessageCall = data[i].MessageCall
-				message.Message = data[i].Message
+				message.MessageCall = messages[j].MessageCall
+				message.Message = messages[j].Message
 				childMsg.Messages = append(childMsg.Messages, message)
+				message = messageData{}
 			}
 			userMessage = append(userMessage, childMsg)
+			childMsg.Messages = nil
 		}
 	}
+
 	response.Json(gin.H{"messages": userMessage}, c)
+}
+
+// メッセージ削除
+func (m *messageimpl) DeleteMessage(c *gin.Context) {
+	_, ok := authorizationCheck(c)
+	if !ok {
+		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
+		return
+	}
+	goalId := c.Param("goal_id")
+	messageCall := c.Param("message_call")
+	message, err := strconv.Atoi(messageCall)
+	if err != nil {
+		response.BadRequest(gin.H{"error": "メッセージの出力条件が不正です。"}, c)
+		return
+	}
+
+	success := service.DeleteMessage(goalId, message)
+	if !success {
+		response.BadRequest(gin.H{"error": "メッセージの削除に失敗しました。"}, c)
+		return
+	}
+	response.Json(gin.H{"success": "メッセージを削除しました。"}, c)
 }

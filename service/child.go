@@ -15,19 +15,22 @@ func FindByUserName(name string) ([]model.UserChild, bool) {
 }
 
 // 子どもID検索
-func exisByChildId(name string, childId int) bool {
+func GetByChildInfo(name string, childId int) ([]model.UserChild, bool) {
 	var children []model.UserChild
 	db.Where("name = ? and child_id = ?", name, childId).Find(&children)
-	return len(children) != 0
+	return children, len(children) != 0
 }
 
 // 子供情報追加
 func AddChild(name string, info validation.UserChildren) (int, bool) {
 	var i int
+	find := true
 
-	for i = 1; exisByChildId(name, i) == true; i++ {
+	for i = 1; find == true; i++ {
+		_, find = GetByChildInfo(name, i)
 	}
-	childId := i
+
+	childId := i - 1
 
 	birthday, err := time.Parse("2006-01-02", info.BirthDay)
 	if err != nil {

@@ -191,11 +191,13 @@ FORMAT: 1A
         + devices (array)
             + (object)
                 + child_id :1 (number)
+                + nickname: sample
                 + child_devices (array)
                     + sample,
                     + index
             + (object)
                 + child_id: 2 (number)
+                + nickname: test
                 + child_devices (array)
                     + test,
                     + buf
@@ -299,12 +301,14 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
 # Group BOCCO x 学習 API
 
-## 記録を取得 [/work/record/{device_id}]
-### 回答データの取得[GET]
+## グラフ用のデータ取得 [/work/record/{device_id}{?filter}]
+
+### グラフ用の解答データの取得[GET]
 指定されたリーダーの記録情報を取得
 
 + Parameters
     + device_id: sample
+    + filter: date - もしくはgenre
 
 + Request
     + Headers
@@ -317,25 +321,185 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
         + records (array)
             + (object)
                 + date: `2018-06-21T13:35:08+09:00` - 回答日時
-                + genre_name: 算数 - 問題のジャンル名
-                + sentence: 1 + 1は? - 問題文
-                + user_answer: 2 - ユーザーの回答
-                + correct: 2 - 問題の正解
-                + result: true (boolean) - 正解:true,不正解:false
+                + num_ans: 10(number) - 回答数
+                + num_corr: 5(number)- 正答数
 
             + (object)
                 + date: `2018-06-22T13:35:08+09:00`
-                + genre_name: 社会
-                + sentence: 兵庫県の県庁所在地は？
-                + user_answer: 兵庫市
-                + correct: 神戸市
-                + result: false (boolean)
+                + num_ans: 7(number) - 回答数
+                + num_corr: 6(number)- 正答数
+
+    + Attributes
+        + records (array)
+            + (object)
+                + num_probs: 50 - ジャンルの総問題数
+                + genre:  算数 - 回答ジャンル
+                + num_ans: 10(number) - 回答数
+                + num_corr: 5(number)- 正答数
+
+            + (object)
+                + num_probs: 30 - ジャンルの総問題数
+                + genre:  社会 - 回答ジャンル
+                + num_ans: 8(number) - 回答数
+                + num_corr: 8(number)- 正答数
+
+   
 
 + Response 400 (application/json)
 
     + Attribute
 
         + error: 回答情報が見つかりませんでした。
+
+## 詳細データの取得 [/work/record/detail/{device_id}{?date,genre}]
+
+### 詳細な解答データの取得[GET]
+指定されたリーダーの記録情報を取得
+
++ Parameters
+    + device_id: sample
+    + date: `2018-07-04`
+    + genre: 1 - genre_id
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attributes
+        + records (array)
+            + (object)
+                + date: `2018-06-21T13:35:08+09:00` - 回答日時
+                + genre_name: 算数
+                + detail(array)
+                    + (object)
+                        + sentence: 1 + 1は？
+                        + user_ans: 2
+                        + correct: 2
+                        + result: true (boolean) - 正解:true,不正解:false
+                    
+                    + (object)
+                        + sentence: 3 - 2は？
+                        + user_ans: 2
+                        + correct: 1
+                        + result: false (boolean)
+
+            + (object)
+                + date: `2018-06-22T13:35:08+09:00`
+                + genre_name: 社会
+                + detail(array)
+                    + (object)
+                        + sentence: 兵庫県の県庁所在地は？
+                        + user_answer: 兵庫市
+                        + correct: 神戸市
+                        + result: false (boolean)
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: 回答情報が見つかりませんでした。
+
+## メッセージ [/work/message/{child_id}/{message_call}{?condtion}]
+
+### メッセージ登録[POST]
+オリジナルメッセージの登録を行います。
+
++ Request (application/json)
+    + Headers
+
+            Authorization: token
+
+    + Attribute
+        + child_id: 1 (number)
+        + message_call : 3 (number) - (1: 正解,2:不正解,3: 連続正解時)
+        + condition : 10 (number) - 3の時
+        + message: practice
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: メッセージを編集しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### メッセージ取得[GET]
+登録されているメッセージとメッセージ出力条件を取得します。
+
++ Request
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + messages(array)
+            + (object)
+                + child_id: 1 (number)
+                + nickname: sample
+                + child_messages(array)
+                    + (object)
+                        + content: practice
+                        + message_call: 2 (number)
+                        + message: practice
+                    + (object)
+                        + content: test
+                        + message_call: 3 (number)
+                        + condtion: 5 (number)
+                        + message: sample
+            + (object)
+                + child_id: 2 (number)
+                + nickname: index
+                + child_messages(array)
+                    + (object)
+                        + message_call: 3 (number)
+                        + condition: 10 (number)
+                        + message: sample
+                    + (object)
+                        + goal_id: hoge
+                        + content: test
+                        + message_call: 1 (number)
+                        + message: hoge
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
+
+### メッセージ削除[DELETE]
+オリジナルメッセージの削除を行います。
+
++ Parameters
+    + child_id: 1 (number)
+    + message_call: 3 (number)
+    + condtion: 10 (number)
+
++ Request (application/json)
+    + Headers
+
+            Authorization: token
+
++ Response 200 (application/json)
+
+    + Attribute
+
+        + success: メッセージを削除しました。
+
++ Response 400 (application/json)
+
+    + Attribute
+
+        + error: ログインエラー
 
 # Group BOCCO x 目標ボタン API
 
@@ -404,27 +568,43 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
     + Attributes
         + goals(array)
             + (object)
-                + created_at: `2018-06-21T13:35:08+09:00`
                 + child_id: 1 (number)
-                + goal_id : test - 目標ID
-                + device_id : sample
-                + run : 5 (number) - 目標実行数
-                + content: practice - 目標名称
-                + criteria: 20 (number) - 達成目標数
-                + deadline : `2018-07-11T13:35:08+09:00` - 達成期日(なければ空)
-                + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
-                + updated_at: `2018-06-21T13:37:21+09:00`,
+                + nickname: nicname
+                + child_goals(array)
+                    + (object)
+                        + created_at: `2018-06-21T13:35:08+09:00`
+                        + goal_id : test - 目標ID
+                        + device_id : sample
+                        + run : 5 (number) - 目標実行数
+                        + content: practice - 目標名称
+                        + criteria: 20 (number) - 達成目標数
+                        + deadline : `2018-07-11T13:35:08+09:00` - 達成期日(なければ空)
+                        + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
+                        + updated_at: `2018-06-21T13:37:21+09:00`,
+                    + (object)
+                        + created_at: `2018-06-21T13:35:08+09:00`
+                        + goal_id : sample
+                        + device_id : hoge
+                        + run : 5 (number)
+                        + content: index
+                        + criteria: 30 (number)
+                        + deadline : なし
+                        + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
+                        + updated_at: `2018-06-21T13:37:21+09:00`,
             + (object)
-                + created_at: `2018-06-21T13:35:08+09:00`
                 + child_id: 2 (number)
-                + goal_id : sample
-                + device_id : index
-                + run : 5 (number)
-                + content: index
-                + criteria: 30 (number)
-                + deadline : なし
-                + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
-                + updated_at: `2018-06-21T13:37:21+09:00`,
+                + nickname: sample
+                + child_goals(array)
+                    + (object)
+                        + created_at: `2018-06-21T13:35:08+09:00`
+                        + goal_id : index - 目標ID
+                        + device_id : index
+                        + run : 5 (number) - 目標実行数
+                        + content: practice - 目標名称
+                        + criteria: 20 (number) - 達成目標数
+                        + deadline : `2018-07-11T13:35:08+09:00` - 達成期日(なければ空)
+                        + status : 0 (number) - 達成状況(0:未実行、1:実行中、2:達成済み、3:達成失敗)
+                        + updated_at: `2018-06-21T13:37:21+09:00`,
 
 
 + Response 400 (application/json)
@@ -526,6 +706,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
         + messages(array)
             + (object)
                 + child_id: 1 (number)
+                + nickname: sample
                 + child_messages(array)
                     + (object)
                         + goal_id: sample
@@ -539,6 +720,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
                         + message: sample
             + (object)
                 + child_id: 2 (number)
+                + nickname: index
                 + child_messages(array)
                     + (object)
                         + goal_id: buf
@@ -557,7 +739,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
-### メッセージ登録[DELETE]
+### メッセージ削除[DELETE]
 オリジナルメッセージの削除を行います。
 
 + Parameters
@@ -573,7 +755,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
     + Attribute
 
-        + success: メッセージを編集しました。
+        + success: メッセージを削除しました。
 
 + Response 400 (application/json)
 
@@ -621,7 +803,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
     + Attribute
 
-        + success: 送信しました。
+        + success: true (boolean)
 
 + Response 418 (application/json)
 

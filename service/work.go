@@ -2,17 +2,24 @@ package service
 
 import "github.com/HAL-RO-Developer/caseTeamB_server/model"
 
-// 端末ごとの回答情報取得
-func ExisByRecord(deviceId string) ([]model.Record, bool) {
+// ユーザーごとの回答情報取得
+func ExisByRecord(name string) ([]model.Record, bool) {
 	var records []model.Record
-	db.Where("device_id = ?", deviceId).Find(&records)
+	db.Where("name = ?", name).Find(&records)
+	return records, len(records) != 0
+}
+
+// 子どもごとの回答情報取得
+func GetByRecordFromChild(name string, childId int) ([]model.Record, bool) {
+	var records []model.Record
+	db.Where("name = ? and child_id = ?", name, childId).Find(&records)
 	return records, len(records) != 0
 }
 
 // 問題番号から答えを取得
 func GetByCorrect(bookId int, questionNo int) string {
 	var question []model.Question
-	err := db.Where("book_id = ? and q_no = ?", bookId, questionNo).Find(&question).Error
+	err := db.Where("book_id = ? and question_no = ?", bookId, questionNo).Find(&question).Error
 
 	if err != nil {
 		return ""
@@ -55,9 +62,9 @@ func getGenreData(genreId int) []model.Genre {
 }
 
 // 問題情報の取得
-func getQuestionData(bookId int) []model.Question {
+func GetQuestionData(bookId int, qNo int) []model.Question {
 	var question []model.Question
-	err := db.Where("book_id = ?", bookId).Find(&question).Error
+	err := db.Where("book_id = ? and question_no = ?", bookId, qNo).Find(&question).Error
 	if err != nil {
 		return nil
 	}
@@ -65,19 +72,19 @@ func getQuestionData(bookId int) []model.Question {
 }
 
 // タグ情報の取得(タグIDから)
-func GetTagDataFromTagId(tagId string) []model.Tag {
-	var tag []model.Tag
-	err := db.Where("tag_id = ?", tagId).Find(&tag).Error
+func GetTagDataFromTagId(tagId string) *model.Tag {
+	var tag model.Tag
+	err := db.Where("tag_id = ?", tagId).First(&tag).Error
 	if err != nil {
 		return nil
 	}
-	return tag
+	return &tag
 }
 
 // タグ情報の取得(bookId&questionNoから)
 func GetTagDataFromBookId(bookId int, questionId int) []model.Tag {
 	var tag []model.Tag
-	err := db.Where("book_id = ? and q_no = ?", bookId, questionId).Find(&tag).Error
+	err := db.Where("book_id = ? and question_no = ?", bookId, questionId).Find(&tag).Error
 	if err != nil {
 		return nil
 	}
@@ -85,13 +92,13 @@ func GetTagDataFromBookId(bookId int, questionId int) []model.Tag {
 }
 
 // タグ情報の取得(uuidから)
-func GetTagDataFromUuid(uuid string) ([]model.Tag, bool) {
-	var tag []model.Tag
+func GetTagDataFromUuid(uuid string) *model.Tag {
+	var tag model.Tag
 	err := db.Where("uuid = ?", uuid).Find(&tag).Error
 	if err != nil {
-		return nil, false
+		return nil
 	}
-	return tag, true
+	return &tag
 }
 
 // 回答情報の削除

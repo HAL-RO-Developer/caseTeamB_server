@@ -50,13 +50,6 @@ func GetChildInfo(name string) ([]model.UserChild, bool) {
 	return children, true
 }
 
-// こどもID検索
-func ExisByChildId(name string, childId int) bool {
-	var child []model.UserChild
-	db.Where("name = ? and child_id = ?", name, childId).Find(&child)
-	return len(child) != 0
-}
-
 // 最初に見つけたこどもID情報削除
 func DeleteChildFirst(name string) bool {
 	var child model.UserChild

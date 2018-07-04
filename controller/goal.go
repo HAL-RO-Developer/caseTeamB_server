@@ -5,6 +5,7 @@ import (
 
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
 	"github.com/gin-gonic/gin"
 )
@@ -12,8 +13,16 @@ import (
 var Goal = goalimpl{}
 
 type goalimpl struct {
-	Created  time.Time  `json:"created_at"`
+}
+
+type goalInfo struct {
 	ChildId  int        `json:"child_id"`
+	Nickname string     `json:"nickname"`
+	Goals    []goalData `json:"child_goals"`
+}
+
+type goalData struct {
+	Created  time.Time  `json:"created_at"`
 	GoalId   string     `json:"goal_id"`
 	DeviceId string     `json:"device_id"`
 	Run      int        `json:"run"`
@@ -39,7 +48,7 @@ func (g *goalimpl) CreateGoal(c *gin.Context) {
 
 	goalId, err := service.RegistrationGoal(name, req)
 	if err != nil {
-		response.BadRequest(gin.H{"error": "目標登録に失敗しました。"}, c)
+		response.BadRequest(gin.H{"error": goalId}, c)
 		return
 	}
 	response.Json(gin.H{"goal_id": goalId}, c)
@@ -69,48 +78,58 @@ func (g *goalimpl) UpdateGoal(c *gin.Context) {
 
 // 目標取得
 func (g *goalimpl) GetGoal(c *gin.Context) {
-	var goals []goalimpl
-	var goal goalimpl
+	var userGoal []goalInfo
+	var childGoal goalInfo
+	var goal goalData
+	var childData []model.UserChild
+	var status int
+
 	name, ok := authorizationCheck(c)
 	if !ok {
 		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
 		return
 	}
 
-	// ボタンIDを検索
-	data, find := service.GetGoal(name)
-	if !find {
-		response.BadRequest(gin.H{"error": "目標が登録されていません。"}, c)
-		return
-	}
+	children, _ := service.GetChildInfo(name)
 
-	if find {
-		for i := 0; i < len(data); i++ {
-			status := 0
-			if data[i].Run < data[i].Criteria {
-				status = 1
-			} else if data[i].Run >= data[i].Criteria && data[i].CreatedAt.Unix() > data[i].Deadline.Unix() {
-				status = 3
-			} else {
-				status = 2
+	/* 子どもIDの数繰り返し */
+	for i := 0; i < len(children); i++ {
+		// ボタンIDを検索
+		goals, find := service.GetGoalForChild(name, children[i].ChildId)
+		if !find {
+
+		} else {
+			childGoal.ChildId = children[i].ChildId
+			childData, _ = service.GetByChildInfo(name, children[i].ChildId)
+			childGoal.Nickname = childData[0].NickName
+			/* メッセージの数繰り返し */
+			for j := 0; j < len(goals); j++ {
+				status = 0
+				if goals[j].Run < goals[j].Criteria {
+					status = 1
+				} else if goals[j].Run >= goals[j].Criteria && goals[j].CreatedAt.Unix() > goals[j].Deadline.Unix() {
+					status = 3
+				} else {
+					status = 2
+				}
+
+				goal.Created = goals[j].CreatedAt
+				goal.GoalId = goals[j].GoalId
+				goal.DeviceId = goals[j].DeviceId
+				goal.Run = goals[j].Run
+				goal.Content = goals[j].Content
+				goal.Criteria = goals[j].Criteria
+				goal.Deadline = goals[j].Deadline
+				goal.Status = status
+				goal.Updated = goals[j].UpdatedAt
+				childGoal.Goals = append(childGoal.Goals, goal)
+				goal = goalData{}
 			}
-
-			goal.Created = data[i].CreatedAt
-			goal.ChildId = data[i].ChildId
-			goal.GoalId = data[i].GoalId
-			goal.DeviceId = data[i].DeviceId
-			goal.Run = data[i].Run
-			goal.Content = data[i].Content
-			goal.Criteria = data[i].Criteria
-			goal.Deadline = data[i].Deadline
-			goal.Status = status
-			goal.Updated = data[i].UpdatedAt
-			goals = append(goals, goal)
+			userGoal = append(userGoal, childGoal)
+			childGoal.Goals = nil
 		}
-		response.Json(gin.H{"goals": goals}, c)
-		return
 	}
-	response.BadRequest(gin.H{"error": "目標が見つかりませんでした。"}, c)
+	response.Json(gin.H{"goals": userGoal}, c)
 }
 
 // 目標削除

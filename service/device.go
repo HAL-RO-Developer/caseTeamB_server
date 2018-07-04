@@ -18,7 +18,8 @@ type deviceInfo struct {
 // デバイス情報新規登録
 func CreateDevice(name string, childId int) (string, bool) {
 	var info deviceInfo
-	if ExisByChildId(name, childId) == false {
+	_, find := GetByChildInfo(name, childId)
+	if !find {
 		return "子どもIDが存在しません。", false
 	}
 
@@ -52,18 +53,6 @@ func RegistrationDevice(pin string, mac string) (string, bool) {
 		return "デバイスIDが登録できませんでした。", false
 	}
 	return deviceId, true
-}
-
-// pin削除
-func DeletePin(pin string) bool {
-	device := model.Device{}
-	err := db.Where("pin = ?", pin).First(&device).Error
-	if err != nil {
-		return false
-	}
-
-	db.Delete(device)
-	return true
 }
 
 // デバイスID作成
