@@ -97,7 +97,7 @@ func (g *goalimpl) GetGoal(c *gin.Context) {
 		// ボタンIDを検索
 		goals, find := service.GetGoalForChild(name, children[i].ChildId)
 		if !find {
-
+			response.Json(gin.H{"goals": []goalInfo{}}, c)
 		} else {
 			childGoal.ChildId = children[i].ChildId
 			childData, _ = service.GetByChildInfo(name, children[i].ChildId)
@@ -149,3 +149,5 @@ func (g *goalimpl) DeleteGoal(c *gin.Context) {
 	}
 	response.BadRequest(gin.H{"error": "目標が見つかりません。"}, c)
 }
+
+//

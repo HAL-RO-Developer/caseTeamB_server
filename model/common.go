@@ -23,7 +23,7 @@ type UserChild struct {
 	Model
 	Name     string    `json:"name" binding:"required"`
 	ChildId  int       `json:"child_id"`
-	BirthDay time.Time `json:"birthday"`
+	BirthDay time.Time `json:"birthday" sql:"type:date"`
 	NickName string    `json:"nickname"`
 	Sex      int       `json:"sex"`
 }

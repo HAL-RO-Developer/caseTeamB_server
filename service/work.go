@@ -1,6 +1,10 @@
 package service
 
-import "github.com/HAL-RO-Developer/caseTeamB_server/model"
+import (
+	"time"
+
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
+)
 
 // ユーザーごとの回答情報取得
 func ExisByRecord(name string) ([]model.Record, bool) {
@@ -13,6 +17,29 @@ func ExisByRecord(name string) ([]model.Record, bool) {
 func GetByRecordFromChild(name string, childId int) ([]model.Record, bool) {
 	var records []model.Record
 	db.Where("name = ? and child_id = ?", name, childId).Find(&records)
+	return records, len(records) != 0
+}
+
+// 同一回答日の回答情報を取得
+func GetByRecordFromDay(name string, childId int, day time.Time) ([]model.Record, bool) {
+	var records []model.Record
+	date := day.String()
+	db.Where("name = ? and child_id = ? and answer_day = ?", name, childId, date).Find(&records)
+	return records, len(records) != 0
+}
+
+// 同一ジャンルの回答情報を取得
+func GetByRecordFromGenre(name string, childId int, genreId int) ([]model.Record, bool) {
+	var records []model.Record
+	db.Where("name = ? and child_id = ? and genre_id = ?", name, childId, genreId).Find(&records)
+	return records, len(records) != 0
+}
+
+// 同一回答日&同一ジャンルの回答情報を取得
+func GetByRecordFromGenreDate(name string, childId int, day time.Time, genreId int) ([]model.Record, bool) {
+	var records []model.Record
+	date := day.String()
+	db.Where("name = ? and child_id = ? and answer_day = ? and genre_id = ?", name, childId, date, genreId).Find(&records)
 	return records, len(records) != 0
 }
 
@@ -29,7 +56,7 @@ func GetByCorrect(bookId int, questionNo int) string {
 
 // ジャンル名称の取得
 func GetGenreName(bookId int) string {
-	book := getBookData(bookId)
+	book := GetBookData(bookId)
 	if book == nil {
 		return ""
 	}
@@ -42,7 +69,7 @@ func GetGenreName(bookId int) string {
 }
 
 // 本情報の取得
-func getBookData(bookId int) []model.Book {
+func GetBookData(bookId int) []model.Book {
 	var book []model.Book
 	err := db.Where("book_id = ?", bookId).Find(&book).Error
 	if err != nil {
@@ -59,6 +86,13 @@ func getGenreData(genreId int) []model.Genre {
 		return nil
 	}
 	return genre
+}
+
+// ジャンルの個数取得
+func GetGenreNumber() int {
+	var genre []model.Genre
+	db.Where("").Find(&genre)
+	return len(genre)
 }
 
 // 問題情報の取得

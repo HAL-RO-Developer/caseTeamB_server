@@ -28,7 +28,11 @@ func userRouter(user *gin.RouterGroup) {
 
 func workRouter(work *gin.RouterGroup) {
 	// 回答記録取得
-	work.GET("/record/:device_id", Record.WorkRecord)
+	work.GET("/graph/:child_id", Record.WorkRecordForGraph)
+	work.GET("/detail/:child_id", Record.WorkRecordForDetail)
+	work.POST("/message", WorkMessage.EditMessage)
+	work.GET("/message/:child_id", WorkMessage.GetMessage)
+	work.DELETE("/message/:child_id/:message_call", WorkMessage.DeleteMessage)
 }
 
 func goalRouter(goal *gin.RouterGroup) {

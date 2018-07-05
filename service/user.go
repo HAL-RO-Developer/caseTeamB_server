@@ -1,6 +1,10 @@
 package service
 
-import "github.com/HAL-RO-Developer/caseTeamB_server/model"
+import (
+	"time"
+
+	"github.com/HAL-RO-Developer/caseTeamB_server/model"
+)
 
 var User = user{}
 
@@ -70,4 +74,11 @@ func DeleteChild(name string, childId int) bool {
 	}
 	db.Delete(&child)
 	return true
+}
+
+func bGetDateUser(date time.Time) []model.User {
+	var user []model.User
+	//day := date.Format("2006-01-02")
+	db.Where("created_at = ?", date).Find(&user)
+	return user
 }

@@ -65,6 +65,7 @@ func (d *deviceimpl) ListDevice(c *gin.Context) {
 
 	_, find := service.GetDeviceId(name)
 	if !find {
+		userDevices = []deviceInfo{}
 		response.Json(gin.H{"devices": userDevices}, c)
 		return
 	}
@@ -73,6 +74,10 @@ func (d *deviceimpl) ListDevice(c *gin.Context) {
 	for i := 0; i < len(children); i++ {
 		devices, find = service.GetDeviceIdFromChildId(name, children[i].ChildId)
 		if !find {
+			device.ChildId = children[i].ChildId
+			childData, _ = service.GetByChildInfo(name, children[i].ChildId)
+			device.Nickname = childData[0].NickName
+			device.Devices = []string{}
 		} else {
 			device.ChildId = children[i].ChildId
 			childData, _ = service.GetByChildInfo(name, children[i].ChildId)

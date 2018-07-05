@@ -86,6 +86,17 @@ func UpdateGoal(name string, info validation.UpdateGoal) error {
 	return err
 }
 
+// 目標削除(子どもごとに削除)
+func DeleteGoalFromChild(name string, childId int) bool {
+	var goal model.GoalData
+	err := db.Where("name = ? and child_id", name, childId).First(&goal).Error
+	if err != nil {
+		return false
+	}
+	db.Delete(goal)
+	return true
+}
+
 // 目標取得(デバイスID)
 func GetGoalFromDeviceId(deviceId string) ([]model.GoalData, bool) {
 	var goals []model.GoalData

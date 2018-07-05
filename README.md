@@ -301,13 +301,13 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
 # Group BOCCO x 学習 API
 
-## グラフ用のデータ取得 [/work/record/{device_id}{?filter}]
+## グラフ用のデータ取得 [/work/record/{child_id}{?filter}]
 
 ### グラフ用の解答データの取得[GET]
-指定されたリーダーの記録情報を取得
+指定された子どもの記録情報を取得
 
 + Parameters
-    + device_id: sample
+    + child_id: 1
     + filter: date - もしくはgenre
 
 + Request
@@ -351,13 +351,13 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: 回答情報が見つかりませんでした。
 
-## 詳細データの取得 [/work/record/detail/{device_id}{?date,genre}]
+## 詳細データの取得 [/work/record/detail/{child_id}{?date,genre}]
 
 ### 詳細な解答データの取得[GET]
-指定されたリーダーの記録情報を取得
+指定された子どもの記録情報を取得
 
 + Parameters
-    + device_id: sample
+    + child_id: 1
     + date: `2018-07-04`
     + genre: 1 - genre_id
 
@@ -402,7 +402,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: 回答情報が見つかりませんでした。
 
-## メッセージ [/work/message/{child_id}/{message_call}{?condtion}]
+## メッセージ [/work/message/{child_id}{?condtion}]
 
 ### メッセージ登録[POST]
 オリジナルメッセージの登録を行います。
@@ -448,11 +448,9 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
                 + nickname: sample
                 + child_messages(array)
                     + (object)
-                        + content: practice
                         + message_call: 2 (number)
                         + message: practice
                     + (object)
-                        + content: test
                         + message_call: 3 (number)
                         + condtion: 5 (number)
                         + message: sample
@@ -465,8 +463,6 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
                         + condition: 10 (number)
                         + message: sample
                     + (object)
-                        + goal_id: hoge
-                        + content: test
                         + message_call: 1 (number)
                         + message: hoge
 
@@ -476,13 +472,12 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
+## メッセージ削除 [/work/message/{message_id}]
 ### メッセージ削除[DELETE]
 オリジナルメッセージの削除を行います。
 
 + Parameters
-    + child_id: 1 (number)
-    + message_call: 3 (number)
-    + condtion: 10 (number)
+    + message_id: sample
 
 + Request (application/json)
     + Headers

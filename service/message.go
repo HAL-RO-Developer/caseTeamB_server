@@ -19,14 +19,14 @@ func RegistrationMessage(goalId string, messageCall int, message string) error {
 	return err
 }
 
-// 目標取得
+// メッセージ取得
 func GetMessageFromName(name string) ([]model.CustomMessage, bool) {
 	var messages []model.CustomMessage
 	db.Where("name = ?", name).Find(&messages)
 	return messages, len(messages) != 0
 }
 
-// 目標取得
+// メッセージ取得
 func GetMessageFromNameChild(name string, childId int) ([]model.CustomMessage, bool) {
 	var messages []model.CustomMessage
 	db.Where("name = ? and child_id = ?", name, childId).Find(&messages)
@@ -37,6 +37,13 @@ func GetMessageFromNameChild(name string, childId int) ([]model.CustomMessage, b
 func GetMessageFromGoal(goalId string) ([]model.CustomMessage, bool) {
 	var messages []model.CustomMessage
 	db.Where("goal_id = ?", goalId).Find(&messages)
+	return messages, len(messages) != 0
+}
+
+// メッセージ取得
+func GetMessageFromNameChildTrue(name string, childId int, messageCall int) ([]model.CustomMessage, bool) {
+	var messages []model.CustomMessage
+	db.Where("name = ? and child_id = ?, message_call = ?", name, childId, messageCall).Find(&messages)
 	return messages, len(messages) != 0
 }
 
@@ -63,6 +70,17 @@ func UpdateMessage(goalId string, messageCall int, message string) error {
 func DeleteMessage(goalId string, messageCall int) bool {
 	var data model.CustomMessage
 	err := db.Where("goal_id = ? and message_call = ?", goalId, messageCall).First(&data).Error
+	if err != nil {
+		return false
+	}
+	db.Delete(data)
+	return true
+}
+
+// メッセージ削除(子どもごと)
+func DeleteMessageFromChild(name string, childId int) bool {
+	var data model.CustomMessage
+	err := db.Where("name = ? and child_id = ?", name, childId).First(&data).Error
 	if err != nil {
 		return false
 	}

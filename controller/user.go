@@ -101,7 +101,11 @@ func (u *userimpl) GetChildren(c *gin.Context) {
 		return
 	}
 
-	buf, _ := service.FindByUserName(name)
+	buf, find := service.FindByUserName(name)
+	if !find {
+		response.Json(gin.H{"children": []userimpl{}}, c)
+		return
+	}
 
 	for i := 0; i < len(buf); i++ {
 		child.ChildId = buf[i].ChildId
@@ -148,10 +152,29 @@ func (u *userimpl) DeleteChild(c *gin.Context) {
 		return
 	}
 
-	data, find := service.GetDeviceIdFromChildId(name, childId)
+	devices, _ := service.GetDeviceIdFromChildId(name, childId)
+	for i := 0; i < len(devices); i++ {
+		service.DeleteDeviceId(name, devices[i].DeviceId)
+	}
+
+	goals, find := service.GetGoalForChild(name, childId)
 	if find {
-		for i := 0; i < len(data); i++ {
-			service.DeleteDeviceIdFromChild(name, childId)
+		for i := 0; i < len(goals); i++ {
+			service.DeleteGoalFromChild(name, childId)
+		}
+	}
+
+	messages, find := service.GetMessageFromNameChild(name, childId)
+	if find {
+		for i := 0; i < len(messages); i++ {
+			service.DeleteMessageFromChild(name, childId)
+		}
+	}
+
+	workMessages, find := service.GetWorkMessageFromNameChild(name, childId)
+	if find {
+		for i := 0; i < len(workMessages); i++ {
+			service.DeleteWorkMessageFromChild(name, childId)
 		}
 	}
 

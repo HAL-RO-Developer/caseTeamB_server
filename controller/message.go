@@ -86,7 +86,7 @@ func (m *messageimpl) GetMessage(c *gin.Context) {
 
 	_, find := service.GetMessageFromName(name)
 	if !find {
-		response.Json(gin.H{"messages": userMessage}, c)
+		response.Json(gin.H{"messages": []messageInfo{}}, c)
 		return
 	}
 	children, _ := service.GetChildInfo(name)
