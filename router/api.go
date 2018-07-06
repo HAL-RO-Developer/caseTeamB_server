@@ -26,15 +26,6 @@ func userRouter(user *gin.RouterGroup) {
 	user.DELETE("/bocco", Bocco.DeleteBoccoInfo)
 }
 
-func workRouter(work *gin.RouterGroup) {
-	// 回答記録取得
-	work.GET("/graph/:child_id", Record.WorkRecordForGraph)
-	work.GET("/detail/:child_id", Record.WorkRecordForDetail)
-	work.POST("/message", WorkMessage.EditMessage)
-	work.GET("/message/:child_id", WorkMessage.GetMessage)
-	work.DELETE("/message/:child_id/:message_call", WorkMessage.DeleteMessage)
-}
-
 func goalRouter(goal *gin.RouterGroup) {
 	// 目標登録、取得、削除
 	goal.POST("/goal", Goal.CreateGoal)
@@ -54,8 +45,6 @@ func goalRouter(goal *gin.RouterGroup) {
 func thingRouter(thing *gin.RouterGroup) {
 	// デバイスID紐付け
 	thing.POST("/registration", Device.DeviceRegistration)
-	// ICリーダー
-	thing.POST("/reader", Reader.SendTag)
 	// プッシュ回数プラス1
 	thing.PUT("/button", Button.DeviceIncrement)
 }

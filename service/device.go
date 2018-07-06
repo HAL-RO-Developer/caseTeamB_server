@@ -16,15 +16,15 @@ type deviceInfo struct {
 }
 
 // デバイス情報新規登録
-func CreateDevice(name string, childId int) (string, bool) {
+func CreateDevice(name string, goalId string) (string, bool) {
 	var info deviceInfo
-	_, find := GetByChildInfo(name, childId)
+	goalData, find := GetOneGoal(goalId)
 	if !find {
-		return "子どもIDが存在しません。", false
+		return "目標が見つかりません。", false
 	}
 
 	info.Name = name
-	info.ChildId = childId
+	info.ChildId = goalData.ChildId
 	info.Pin = createPin()
 	RegistInfo = append(RegistInfo, info)
 
@@ -32,7 +32,7 @@ func CreateDevice(name string, childId int) (string, bool) {
 }
 
 // macAddr&デバイスID登録
-func RegistrationDevice(pin string, mac string) (string, bool) {
+func RegistrationDevice(pin string) (string, bool) {
 	buf, find := GetPin(pin)
 	if !find {
 		return "pinが見つかりませんでした。", false
@@ -45,7 +45,6 @@ func RegistrationDevice(pin string, mac string) (string, bool) {
 		Name:     buf.Name,
 		ChildId:  buf.ChildId,
 		DeviceId: deviceId,
-		Mac:      mac,
 	}
 
 	err := db.Create(&device).Error

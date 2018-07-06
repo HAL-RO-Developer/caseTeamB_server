@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/response"
 	"github.com/HAL-RO-Developer/caseTeamB_server/controller/validation"
 	"github.com/HAL-RO-Developer/caseTeamB_server/service"
@@ -46,19 +44,21 @@ func (b *buttonimpl) DeviceIncrement(c *gin.Context) {
 			response.Json(gin.H{"angle": int(progress)}, c)
 			return
 		}
-		// 目標の実行回数がメッセージの発信条件を満たした時
-		if data[0].Run == message[0].MessageCall {
-			boccoInfo, find := service.ExisByBoccoAPI(bocco[0].Name)
-			if !find {
-				fmt.Println("test")
-				response.Json(gin.H{"angle": int(progress)}, c)
-				return
+		for i := 0; i < len(message); i++ {
+			// 目標の実行回数がメッセージの発信条件を満たした時
+			if data[0].Run == message[i].MessageCall {
+				boccoInfo, find := service.ExisByBoccoAPI(bocco[0].Name)
+				if !find {
+					response.Json(gin.H{"angle": int(progress)}, c)
+					return
+				}
+				boccoToken, _ := service.GetBoccoToken(boccoInfo[0].Email, boccoInfo[0].Key, boccoInfo[0].Pass)
+				roomId, _ := service.GetRoomId(boccoToken)
+				uuid := uuid.Must(uuid.NewV4()).String()
+				service.SendMessage(uuid, roomId, boccoToken, message[i].Message)
 			}
-			boccoToken, _ := service.GetBoccoToken(boccoInfo[0].Email, boccoInfo[0].Key, boccoInfo[0].Pass)
-			roomId, _ := service.GetRoomId(boccoToken)
-			uuid := uuid.Must(uuid.NewV4()).String()
-			service.SendMessage(uuid, roomId, boccoToken, message[0].Message)
 		}
+
 		response.Json(gin.H{"angle": int(progress)}, c)
 		return
 	}

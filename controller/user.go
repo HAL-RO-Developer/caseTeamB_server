@@ -37,29 +37,7 @@ func (u *userimpl) Create(c *gin.Context) {
 	}
 }
 
-// ユーザー削除(チームA)
-func (u *userimpl) UserDeleteForWork(c *gin.Context) {
-	name, ok := authorizationCheck(c)
-	if !ok {
-		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
-		return
-	}
-
-	works, find := service.ExisByRecord(name)
-	if find {
-		for i := 0; i < len(works); i++ {
-			//service.DeleteUserAnswer(works[i].DeviceId)
-		}
-	}
-
-	if service.DeleteUser(name) {
-		response.Json(gin.H{"success": "ユーザー情報を削除しました。"}, c)
-		return
-	}
-	response.BadRequest(gin.H{"error": "ユーザー情報が見つかりませんでした。"}, c)
-}
-
-// ユーザー削除(チームB)
+// ユーザー削除
 func (u *userimpl) UserDeleteForGoal(c *gin.Context) {
 	name, ok := authorizationCheck(c)
 	if !ok {
@@ -168,13 +146,6 @@ func (u *userimpl) DeleteChild(c *gin.Context) {
 	if find {
 		for i := 0; i < len(messages); i++ {
 			service.DeleteMessageFromChild(name, childId)
-		}
-	}
-
-	workMessages, find := service.GetWorkMessageFromNameChild(name, childId)
-	if find {
-		for i := 0; i < len(workMessages); i++ {
-			service.DeleteWorkMessageFromChild(name, childId)
 		}
 	}
 

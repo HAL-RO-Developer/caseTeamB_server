@@ -16,10 +16,6 @@ func GetRouter() *gin.Engine {
 	user := r.Group("/")
 	userRouter(user)
 
-	// teamA
-	work := r.Group("/work")
-	workRouter(work)
-
 	// teamB
 	goal := r.Group("/goal")
 	goalRouter(goal)

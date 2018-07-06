@@ -82,7 +82,7 @@ FORMAT: 1A
     + Attributes
         + nickname: sample
         + birthday : `2000-01-01`
-        + sex : 0 (number) - 0:男、1:女
+        + sex : 0 (number) - 1:男、2:女
 
 + Response 200 (application/json)
 
@@ -161,7 +161,7 @@ FORMAT: 1A
             Authorization: token
 
     + Attribute
-        + child_id: 1 (number)
+        + goal_id: sample
 
 + Response 200 (application/json)
 
@@ -291,204 +291,6 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
     + Attribute
 
         + success: メールアドレスとパスワードを削除しました。
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-
-# Group BOCCO x 学習 API
-
-## グラフ用のデータ取得 [/work/record/{child_id}{?filter}]
-
-### グラフ用の解答データの取得[GET]
-指定された子どもの記録情報を取得
-
-+ Parameters
-    + child_id: 1
-    + filter: date - もしくはgenre
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attributes
-        + records (array)
-            + (object)
-                + date: `2018-06-21T13:35:08+09:00` - 回答日時
-                + num_ans: 10(number) - 回答数
-                + num_corr: 5(number)- 正答数
-
-            + (object)
-                + date: `2018-06-22T13:35:08+09:00`
-                + num_ans: 7(number) - 回答数
-                + num_corr: 6(number)- 正答数
-
-    + Attributes
-        + records (array)
-            + (object)
-                + num_probs: 50 - ジャンルの総問題数
-                + genre:  算数 - 回答ジャンル
-                + num_ans: 10(number) - 回答数
-                + num_corr: 5(number)- 正答数
-
-            + (object)
-                + num_probs: 30 - ジャンルの総問題数
-                + genre:  社会 - 回答ジャンル
-                + num_ans: 8(number) - 回答数
-                + num_corr: 8(number)- 正答数
-
-   
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: 回答情報が見つかりませんでした。
-
-## 詳細データの取得 [/work/record/detail/{child_id}{?date,genre}]
-
-### 詳細な解答データの取得[GET]
-指定された子どもの記録情報を取得
-
-+ Parameters
-    + child_id: 1
-    + date: `2018-07-04`
-    + genre: 1 - genre_id
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attributes
-        + records (array)
-            + (object)
-                + date: `2018-06-21T13:35:08+09:00` - 回答日時
-                + genre_name: 算数
-                + detail(array)
-                    + (object)
-                        + sentence: 1 + 1は？
-                        + user_ans: 2
-                        + correct: 2
-                        + result: true (boolean) - 正解:true,不正解:false
-                    
-                    + (object)
-                        + sentence: 3 - 2は？
-                        + user_ans: 2
-                        + correct: 1
-                        + result: false (boolean)
-
-            + (object)
-                + date: `2018-06-22T13:35:08+09:00`
-                + genre_name: 社会
-                + detail(array)
-                    + (object)
-                        + sentence: 兵庫県の県庁所在地は？
-                        + user_answer: 兵庫市
-                        + correct: 神戸市
-                        + result: false (boolean)
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: 回答情報が見つかりませんでした。
-
-## メッセージ [/work/message/{child_id}{?condtion}]
-
-### メッセージ登録[POST]
-オリジナルメッセージの登録を行います。
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: token
-
-    + Attribute
-        + child_id: 1 (number)
-        + message_call : 3 (number) - (1: 正解,2:不正解,3: 連続正解時)
-        + condition : 10 (number) - 3の時
-        + message: practice
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: メッセージを編集しました。
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-### メッセージ取得[GET]
-登録されているメッセージとメッセージ出力条件を取得します。
-
-+ Request
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attributes
-
-        + messages(array)
-            + (object)
-                + child_id: 1 (number)
-                + nickname: sample
-                + child_messages(array)
-                    + (object)
-                        + message_call: 2 (number)
-                        + message: practice
-                    + (object)
-                        + message_call: 3 (number)
-                        + condtion: 5 (number)
-                        + message: sample
-            + (object)
-                + child_id: 2 (number)
-                + nickname: index
-                + child_messages(array)
-                    + (object)
-                        + message_call: 3 (number)
-                        + condition: 10 (number)
-                        + message: sample
-                    + (object)
-                        + message_call: 1 (number)
-                        + message: hoge
-
-+ Response 400 (application/json)
-
-    + Attribute
-
-        + error: ログインエラー
-
-## メッセージ削除 [/work/message/{message_id}]
-### メッセージ削除[DELETE]
-オリジナルメッセージの削除を行います。
-
-+ Parameters
-    + message_id: sample
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: token
-
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: メッセージを削除しました。
 
 + Response 400 (application/json)
 
@@ -770,7 +572,6 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
  
     + Attribute
         + pin: 0000
-        + mac: abc123
 
 + Response 200 (application/json)
 
@@ -783,28 +584,6 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
     + Attribute
 
         + error: pinが見つかりません。
-
-## ICリーダー [/thing/reader]
-### 回答データを送信[POST]
-デバイス情報と読み取ったタグの情報を送信。
-
-+ Request(application/json)
-
-    + Attribute
-        + device_id: sample
-        + uuid: 1234
-        
-+ Response 200 (application/json)
-
-    + Attribute
-
-        + success: true (boolean)
-
-+ Response 418 (application/json)
-
-    + Attribute
-
-        + error: データベースエラー
 
 ## プッシュ回数増加 [/thing/button]
 

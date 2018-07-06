@@ -33,7 +33,7 @@ func AddChildInfoValidation(c *gin.Context) (UserChildren, bool) {
 		response.BadRequest(gin.H{"error": "入力されていないデータがあります。"}, c)
 		return req, false
 	}
-	if !(req.Sex == 0 || req.Sex == 1) {
+	if !(req.Sex == 1 || req.Sex == 2) {
 		response.BadRequest(gin.H{"error": "性別が不正です。"}, c)
 		return req, false
 	}

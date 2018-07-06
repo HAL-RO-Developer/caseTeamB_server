@@ -34,7 +34,6 @@ type Device struct {
 	Name     string `json:"name"`
 	ChildId  int    `json:"child_id"`
 	DeviceId string `json:"device_id"`
-	Mac      string `json:"mac"` // ボタンのmacアドレス
 }
 
 // BOCCOAPI設定

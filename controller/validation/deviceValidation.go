@@ -7,14 +7,13 @@ import (
 
 type PostDevice struct {
 	Pin string `json:"pin"`
-	Mac string `json:"mac"`
 }
 
 func DeviceRegistrationCheck(c *gin.Context) (PostDevice, bool) {
 	var req PostDevice
 	err := c.BindJSON(&req)
-	if err != nil || req.Mac == "" || req.Pin == "" {
-		response.BadRequest(gin.H{"error": "pinもしくはmacアドレスが未入力です。"}, c)
+	if err != nil || req.Pin == "" {
+		response.BadRequest(gin.H{"error": "pinが未入力です。"}, c)
 		return req, false
 	}
 	return req, true

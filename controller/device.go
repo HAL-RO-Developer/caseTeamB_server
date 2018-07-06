@@ -29,11 +29,11 @@ func (d *deviceimpl) CreateNewDevice(c *gin.Context) {
 		return
 	}
 
-	req, ok := validation.ChildrenInfoValidation(c)
+	req, ok := validation.DeviceRegistValidation(c)
 	if !ok {
 		return
 	}
-	res, ok := service.CreateDevice(name, req.ChildId)
+	res, ok := service.CreateDevice(name, req.GoalId)
 	if !ok {
 		response.BadRequest(gin.H{"error": res}, c)
 		return
@@ -84,9 +84,7 @@ func (d *deviceimpl) ListDevice(c *gin.Context) {
 			device.Nickname = childData[0].NickName
 			/* デバイスIDの数繰り返し */
 			for j := 0; j < len(devices); j++ {
-				if devices[j].Mac != "" {
-					device.Devices = append(device.Devices, devices[j].DeviceId)
-				}
+				device.Devices = append(device.Devices, devices[j].DeviceId)
 			}
 			userDevices = append(userDevices, device)
 			device.Devices = nil
@@ -119,15 +117,10 @@ func (d *deviceimpl) DeviceRegistration(c *gin.Context) {
 		return
 	}
 
-	if service.ExisByMac(req.Mac) {
-		response.BadRequest(gin.H{"error": "その端末は登録済みです。"}, c)
+	device_id, success := service.RegistrationDevice(req.Pin)
+	if !success {
+		response.BadRequest(gin.H{"error": device_id}, c)
 		return
-	} else {
-		device_id, success := service.RegistrationDevice(req.Pin, req.Mac)
-		if !success {
-			response.BadRequest(gin.H{"error": device_id}, c)
-			return
-		}
-		response.Json(gin.H{"device_id": device_id}, c)
 	}
+	response.Json(gin.H{"device_id": device_id}, c)
 }
