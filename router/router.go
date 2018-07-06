@@ -12,13 +12,9 @@ func GetRouter() *gin.Engine {
 
 	r.GET("/log", log)
 
-	// ユーザー登録
-	user := r.Group("/")
-	userRouter(user)
-
-	// teamB
-	goal := r.Group("/goal")
-	goalRouter(goal)
+	// アプリ側処理
+	api := r.Group("/")
+	apiRouter(api)
 
 	// デバイス側処理
 	thing := r.Group("/thing")

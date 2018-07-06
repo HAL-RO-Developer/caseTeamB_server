@@ -6,40 +6,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func userRouter(user *gin.RouterGroup) {
+func apiRouter(api *gin.RouterGroup) {
 	// ユーザー登録、サインアップ、削除
-	user.POST("/signup", User.Create)
-	user.POST("/signin", middleware.Login)
-	user.DELETE("user", User.UserDeleteForGoal)
+	api.POST("/signup", User.Create)
+	api.POST("/signin", middleware.Login)
+	api.DELETE("user", User.UserDeleteForGoal)
 	// 子ども情報の登録、取得、削除
-	user.POST("/child", User.Child)
-	user.GET("/child", User.GetChildren)
-	user.DELETE("/child/:child_id", User.DeleteChild)
+	api.POST("/child", User.Child)
+	api.GET("/child", User.GetChildren)
+	api.DELETE("/child/:child_id", User.DeleteChild)
 	// デバイスID発行、取得、削除
-	user.POST("/device", Device.CreateNewDevice)
-	user.GET("/device", Device.ListDevice)
-	user.DELETE("/device/:device_id", Device.DeleteDevice)
+	api.POST("/device", Device.CreateNewDevice)
+	api.GET("/device", Device.ListDevice)
+	api.DELETE("/device/:device_id", Device.DeleteDevice)
 
 	// BOCCOAPI
-	user.POST("/bocco", Bocco.RegistBocco)
-	user.GET("/bocco", Bocco.GetBoccoInfo)
-	user.DELETE("/bocco", Bocco.DeleteBoccoInfo)
-}
+	api.POST("/bocco", Bocco.RegistBocco)
+	api.GET("/bocco", Bocco.GetBoccoInfo)
+	api.DELETE("/bocco", Bocco.DeleteBoccoInfo)
 
-func goalRouter(goal *gin.RouterGroup) {
 	// 目標登録、取得、削除
-	goal.POST("/goal", Goal.CreateGoal)
-	goal.PUT("/goal", Goal.UpdateGoal)
-	goal.GET("/goal", Goal.GetGoal)
-	goal.DELETE("/goal/:goal_id", Goal.DeleteGoal)
+	api.POST("/goal", Goal.CreateGoal)
+	api.PUT("/goal", Goal.UpdateGoal)
+	api.GET("/goal", Goal.GetGoal)
+	api.DELETE("/goal/:goal_id", Goal.DeleteGoal)
 
 	// 目標達成操作
-	goal.PUT("/approval", Approval.ApprovalGoal)
+	api.PUT("/approval", Approval.ApprovalGoal)
 
 	// メッセージ登録、取得、削除
-	goal.POST("/message", Message.EditMessage)
-	goal.GET("/message", Message.GetMessage)
-	goal.DELETE("/message/:goal_id/:message_call", Message.DeleteMessage)
+	api.POST("/message", Message.EditMessage)
+	api.GET("/message", Message.GetMessage)
+	api.DELETE("/message/:goal_id/:message_call", Message.DeleteMessage)
 }
 
 func thingRouter(thing *gin.RouterGroup) {

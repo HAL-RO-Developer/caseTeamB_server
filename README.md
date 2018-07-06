@@ -1,7 +1,7 @@
 FORMAT: 1A
 # ケーススタディ HAL大阪　API一覧
 
-# Group A/B共通
+# BOCCO × 目標ボタンAPI
 ## ユーザー登録 [/signup]
 ユーザー情報の登録、およびサインインするためのAPI
 
@@ -298,9 +298,8 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
-# Group BOCCO x 目標ボタン API
 
-## 目標 [/goal/goal/{goal_id}]
+## 目標 [/goal/{goal_id}]
 
 ### 目標登録[POST]
 目標の新規追加を行います。
@@ -434,7 +433,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
-## 目標達成承認/非承認 [/goal/approval]
+## 目標達成承認/非承認 [/approval]
 
 ### 達成数変更 [PUT]
 目標実行数を変更します。
@@ -460,7 +459,7 @@ BOCCOAPIに登録したメールアドレスと、パスワードの削除
 
         + error: ログインエラー
 
-## メッセージ [/goal/message/{goal_id}/{message_call}]
+## メッセージ [/message/{goal_id}/{message_call}]
 
 ### メッセージ登録[POST]
 オリジナルメッセージの登録を行います。
