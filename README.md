@@ -1,7 +1,7 @@
 FORMAT: 1A
 # ケーススタディ HAL大阪　API一覧
 
-# BOCCO × 目標ボタンAPI
+# Group BOCCO × 目標ボタンAPI
 ## ユーザー登録 [/signup]
 ユーザー情報の登録、およびサインインするためのAPI
 
