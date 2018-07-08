@@ -54,28 +54,6 @@ func (g *goalimpl) CreateGoal(c *gin.Context) {
 	response.Json(gin.H{"goal_id": goalId}, c)
 }
 
-// 目標更新
-func (g *goalimpl) UpdateGoal(c *gin.Context) {
-	name, ok := authorizationCheck(c)
-	if !ok {
-		response.TokenError(gin.H{"error": "アクセストークンが不正です。"}, c)
-		return
-	}
-
-	req, ok := validation.GoalUpdateValidation(c)
-	if !ok {
-		return
-	}
-
-	// デバイスIDを登録
-	err := service.UpdateGoal(name, req)
-	if err != nil {
-		response.BadRequest(gin.H{"error": "デバイスIDを登録できませんでした。"}, c)
-		return
-	}
-	response.Json(gin.H{"success": "登録しました"}, c)
-}
-
 // 目標取得
 func (g *goalimpl) GetGoal(c *gin.Context) {
 	var userGoal []goalInfo

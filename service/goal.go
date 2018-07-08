@@ -75,14 +75,14 @@ func ApprovalGoal(goal_id string, approval int) bool {
 }
 
 // ボタン登録
-func UpdateGoal(name string, info validation.UpdateGoal) error {
+func UpdateGoal(goalId string, deviceId string) error {
 	var goal model.GoalData
-	err := db.Where("name = ? and goal_id = ?", name, info.GoalId).First(&goal).Error
+	err := db.Where("goal_id = ?", goalId).First(&goal).Error
 	if err != nil {
 		return err
 	}
 
-	err = db.Model(&goal).Update(&goal).Update("device_id", info.DeviceId).Error
+	err = db.Model(&goal).Update(&goal).Update("device_id", deviceId).Error
 	return err
 }
 

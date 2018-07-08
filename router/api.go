@@ -27,7 +27,6 @@ func apiRouter(api *gin.RouterGroup) {
 
 	// 目標登録、取得、削除
 	api.POST("/goal", Goal.CreateGoal)
-	api.PUT("/goal", Goal.UpdateGoal)
 	api.GET("/goal", Goal.GetGoal)
 	api.DELETE("/goal/:goal_id", Goal.DeleteGoal)
 

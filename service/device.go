@@ -12,6 +12,7 @@ var RegistInfo []deviceInfo
 type deviceInfo struct {
 	Name    string
 	ChildId int
+	GoalId  string
 	Pin     string
 }
 
@@ -25,6 +26,7 @@ func CreateDevice(name string, goalId string) (string, bool) {
 
 	info.Name = name
 	info.ChildId = goalData.ChildId
+	info.GoalId = goalId
 	info.Pin = createPin()
 	RegistInfo = append(RegistInfo, info)
 
@@ -50,6 +52,11 @@ func RegistrationDevice(pin string) (string, bool) {
 	err := db.Create(&device).Error
 	if err != nil {
 		return "デバイスIDが登録できませんでした。", false
+	}
+
+	err = UpdateGoal(buf.GoalId, deviceId)
+	if err != nil {
+		return "デバイスIDが登録に失敗しました。", false
 	}
 	return deviceId, true
 }
