@@ -12,4 +12,3 @@ RUN ls -la
 EXPOSE 8000
 
 ENTRYPOINT ["go","run","main.go"]
-
